@@ -33,6 +33,8 @@ GANTT_SHEET = "간트차트"
 LIST_HEADERS = ["구분키", "구분명", "업무명", "계획시작", "계획종료", "실적시작", "실적종료", "비고", "출처", "주관"]
 PERF_HEADERS = ["평가항목", "단위", "목표", "실적", "달성도", "비고"]
 QUANT_HEADERS = ["성과구분", "단위", "목표", "실적", "비고"]
+MILE_SHEET = "주요일정"
+MILE_HEADERS = ["일정명", "날짜", "비고"]
 CLS = ["a", "b", "c", "d"]
 CLS_HEX = {"a": "2563EB", "b": "7A4FD0", "c": "15A06A", "d": "D9822B"}
 GANTT_START = (2026, 1)
@@ -112,6 +114,18 @@ SEED_QUANT = {pid: [
     {"name": "특허 출원(국내·국제)", "unit": "건", "target": "1", "actual": "0", "note": "예시"},
     {"name": "학술회의 발표", "unit": "건", "target": "2", "actual": "0", "note": "예시"},
 ] for pid in ("chong", "sub1", "sub2", "sub3")}
+# 주요일정(간트 위 ★ 마커) 시드 — 총괄은 초안, 세부는 빈 탭(실무자가 추가)
+SEED_MILE = {
+    "chong": [
+        {"name": "EKC 한-유럽 특별세션", "date": "2026-07-15", "note": "에너지/기계 분과"},
+        {"name": "국제공동워크숍(KIMM 개최)", "date": "2026-08-05", "note": "DLR 참석"},
+        {"name": "운영위원회", "date": "2026-09-15", "note": "연 1회 이상"},
+        {"name": "수요기업 사업화 설명회", "date": "2026-10-20", "note": "국내 수요기업"},
+        {"name": "DLR 기술교류·방문(독일)", "date": "2026-11-10", "note": "한·독 교류"},
+        {"name": "2차년도 연차실적보고서 제출", "date": "2027-02-15", "note": "KETEP"},
+    ],
+    "sub1": [], "sub2": [], "sub3": [],
+}
 
 
 # ───────────────────────── helpers ─────────────────────────
@@ -213,6 +227,16 @@ def read_quant(ws):
     return out
 
 
+def read_mile(ws):
+    out = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        name, date, note = (list(row) + [None] * 3)[:3]
+        if not _s(name):
+            continue
+        out.append({"name": _s(name), "date": fmt_date(date) if is_date(date) else "", "note": _s(note)})
+    return out
+
+
 # ───────────────────────── data → JS ─────────────────────────
 def emit_task(t, with_juk):
     parts = [f"name:{js(t['name'])}"]
@@ -263,9 +287,19 @@ def build_quant_chong_js(quant):
     return "const QUANT_CHONG = " + emit_quant(quant) + ";"
 
 
+def emit_mile(miles):
+    rows = ["    { name:%s, date:%s, note:%s }" % (js(m["name"]), js(m["date"]), js(m["note"]))
+            for m in miles if m.get("date")]
+    return "[\n" + ",\n".join(rows) + " ]" if rows else "[]"
+
+
+def build_mile_chong_js(miles):
+    return "const MILESTONES_CHONG = " + emit_mile(miles) + ";"
+
+
 def build_subprojects_js(sub_defs):
     objs = []
-    for p, cats, perf, quant in sub_defs:
+    for p, cats, perf, quant, miles in sub_defs:
         chips = "[" + ",".join(js(c) for c in p["chips"]) + "]"
         objs.append(
             f"  {{ id:{js(p['id'])}, prefix:{js(p['prefix'])}, nav:{js(p['nav'])},\n"
@@ -274,7 +308,8 @@ def build_subprojects_js(sub_defs):
             f"    chips:{chips},\n"
             f"    cats:{emit_cats(cats, False, '    ')},\n"
             f"    perf:{emit_perf(perf)},\n"
-            f"    quant:{emit_quant(quant)} }}")
+            f"    quant:{emit_quant(quant)},\n"
+            f"    miles:{emit_mile(miles)} }}")
     return "const SUBPROJECTS = [\n" + ",\n".join(objs) + "\n];"
 
 
@@ -368,7 +403,7 @@ def _hdr_row(ws, headers, comments=None):
     return bd
 
 
-def write_xlsx(path, cats, with_juk, perf, quant):
+def write_xlsx(path, cats, with_juk, perf, quant, miles):
     wb = Workbook()
     body = Font(name="Arial", size=10)
     wrap = Alignment(vertical="center", wrap_text=True)
@@ -432,6 +467,23 @@ def write_xlsx(path, cats, with_juk, perf, quant):
         r += 1
     for i, w in enumerate([30, 8, 12, 12, 28], 1):
         ws3.column_dimensions[ws3.cell(1, i).column_letter].width = w
+
+    # 주요일정 (간트 위 ★ 마커)
+    ws4 = wb.create_sheet(MILE_SHEET)
+    bd4 = _hdr_row(ws4, MILE_HEADERS, {2: "YYYY-MM-DD. 간트차트 위에 ★ 마커로 표시됨."})
+    r = 2
+    for m in miles:
+        ws4.cell(r, 1, m.get("name", ""))
+        if m.get("date"):
+            y, mo, dd = (int(x) for x in m["date"].split("-"))
+            dc = ws4.cell(r, 2, datetime.date(y, mo, dd)); dc.number_format = "yyyy-mm-dd"
+        ws4.cell(r, 3, m.get("note", ""))
+        for col in range(1, 4):
+            cc = ws4.cell(r, col); cc.font = body; cc.border = bd4
+            cc.alignment = wrap if col in (1, 3) else center
+        r += 1
+    for i, w in enumerate([34, 14, 30], 1):
+        ws4.column_dimensions[ws4.cell(1, i).column_letter].width = w
 
     write_gantt_sheet(wb, cats)
     wb.active = wb[LIST_SHEET]
@@ -699,7 +751,7 @@ def do_init():
     for p in PROJECTS:
         pid = p["id"]
         write_xlsx(os.path.join(DATA, p["file"]), SEED[pid], p.get("with_juk", False),
-                   SEED_PERF[pid], SEED_QUANT[pid])
+                   SEED_PERF[pid], SEED_QUANT[pid], SEED_MILE[pid])
         print(f"  생성: data/{p['file']}  (업무리스트·성능목표실적·정량성과 + 간트)")
     d = extract_html_arrays(["CHECKLIST", "SUPPLIES", "TIMELINE"])
     write_workshop_xlsx(os.path.join(DATA, WS_FILE), d["CHECKLIST"], d["SUPPLIES"], d["TIMELINE"])
@@ -713,33 +765,35 @@ def _read_project(path):
     cats = read_ws(ws)
     perf = read_perf(wb[PERF_SHEET]) if PERF_SHEET in wb.sheetnames else []
     quant = read_quant(wb[QUANT_SHEET]) if QUANT_SHEET in wb.sheetnames else []
+    miles = read_mile(wb[MILE_SHEET]) if MILE_SHEET in wb.sheetnames else []
     write_gantt_sheet(wb, cats)
     wb.active = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
     wb.save(path)
-    return cats, perf, quant
+    return cats, perf, quant, miles
 
 
 def do_sync():
     if not os.path.exists(INDEX):
         sys.exit("[오류] index.html 없음")
     html = open(INDEX, encoding="utf-8").read()
-    cats_chong = perf_chong = quant_chong = None
+    cats_chong = perf_chong = quant_chong = mile_chong = None
     sub_defs, total = [], 0
     for p in PROJECTS:
         path = os.path.join(DATA, p["file"])
         if not os.path.exists(path):
             sys.exit(f"[오류] {path} 없음. 먼저 `python sync_excel.py --init` 실행.")
-        cats, perf, quant = _read_project(path)
+        cats, perf, quant, miles = _read_project(path)
         n = sum(len(c["tasks"]) for c in cats)
         total += n
-        print(f"  읽음: data/{p['file']}  업무 {n}건 · 성능 {len(perf)} · 정량 {len(quant)}")
+        print(f"  읽음: data/{p['file']}  업무 {n}건 · 성능 {len(perf)} · 정량 {len(quant)} · 일정 {len(miles)}")
         if p["target"] == "CATS":
-            cats_chong, perf_chong, quant_chong = cats, perf, quant
+            cats_chong, perf_chong, quant_chong, mile_chong = cats, perf, quant, miles
         else:
-            sub_defs.append((p, cats, perf, quant))
+            sub_defs.append((p, cats, perf, quant, miles))
     html = inject(html, "CATS", build_cats_js(cats_chong))
     html = inject(html, "PERF_CHONG", build_perf_chong_js(perf_chong))
     html = inject(html, "QUANT_CHONG", build_quant_chong_js(quant_chong))
+    html = inject(html, "MILESTONES_CHONG", build_mile_chong_js(mile_chong))
     html = inject(html, "SUBPROJECTS", build_subprojects_js(sub_defs))
     ws_path = os.path.join(DATA, WS_FILE)
     if os.path.exists(ws_path):
