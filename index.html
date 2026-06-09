@@ -223,6 +223,7 @@
     <button class="tab active" data-tab="pm-list">📋 관리 업무 리스트 <span class="count" id="cnt-pm-list"></span></button>
     <button class="tab" data-tab="pm-gantt">📊 간트 차트 (2026) <span class="count" id="cnt-pm-gantt"></span></button>
     <button class="tab" data-tab="pm-quant">📈 정량 성과 <span class="count" id="cnt-pm-quant"></span></button>
+    <button class="tab" data-tab="pm-budget">💰 연구비 <span class="count" id="cnt-pm-budget"></span></button>
   </div>
   <div class="tabs" data-group="ws" hidden>
     <button class="tab active" data-tab="checklist">✅ 준비 업무 <span class="count" id="cnt-checklist"></span></button>
@@ -255,6 +256,10 @@
   <section class="panel" id="pm-quant">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">📈 정량적 연구개발성과</span><span class="li" style="color:var(--muted)">논문·특허 등 성과지표 목표 대비 실적</span></div>
     <div id="pm-quant-body"></div>
+  </section>
+  <section class="panel" id="pm-budget">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">💰 연구비 (총괄·세부 1~3)</span><span class="li" style="color:var(--muted)">과제별 정부지원금·기관부담·합계 (협약 기준)</span></div>
+    <div id="pm-budget-body"></div>
   </section>
 
   <!-- ===== 워크숍 ===== -->
@@ -426,6 +431,13 @@ const MILESTONES_CHONG = [
     { name:"DLR 기술교류·방문(독일)", date:"2026-11-10", note:"한·독 교류" },
     { name:"2차년도 연차실적보고서 제출", date:"2027-02-15", note:"KETEP" } ];
 /* GEN:MILESTONES_CHONG:END */
+/* GEN:BUDGET:START */
+const BUDGET = [
+    { name:"총괄", gov:1100000, inst:0, total:1100000 },
+    { name:"1세부", gov:2745000, inst:323520, total:3068520 },
+    { name:"2세부", gov:2755000, inst:66706, total:2821706 },
+    { name:"3세부", gov:2750000, inst:295806, total:3045806 } ];
+/* GEN:BUDGET:END */
 
 /* ===== SUB-PROJECTS (세부1·2·3) — 엑셀 동기화로 채워지는 영역 =====
    각 세부의 cats/tasks를 실제 업무·일정으로 교체하면 즉시 반영됩니다.
@@ -719,6 +731,20 @@ function renderQuant(quant, bodyId, cntId) {
     <thead><tr><th>성과 구분</th><th style="text-align:center">단위</th><th style="text-align:center">목표</th><th style="text-align:center">실적</th><th>비고</th></tr></thead>
     <tbody>${quant.map((q)=>`<tr><td class="item-name">${esc(q.name)}</td><td style="text-align:center">${esc(q.unit)}</td><td style="text-align:center">${esc(q.target)}</td><td style="text-align:center"><b>${esc(q.actual)}</b></td><td class="loc">${esc(q.note)}</td></tr>`).join("")}</tbody></table></div></div>`;
 }
+function renderBudget(b, bodyId, cntId) {
+  const el=document.getElementById(bodyId); if(!el) return;
+  const c=document.getElementById(cntId); if(c) c.textContent=(b&&b.length)||"";
+  if(!b||!b.length){ el.innerHTML='<div class="empty">연구비 데이터가 없습니다. 총괄.xlsx의 \'연구비\' 탭에 입력 후 동기화하세요.</div>'; return; }
+  const fmt=(n)=>Number(n||0).toLocaleString();
+  const sum=(k)=>b.reduce((a,x)=>a+(+x[k]||0),0);
+  const tg=sum("gov"), ti=sum("inst"), tt=sum("total");
+  const ratio=(g,t)=>t?Math.round(g/t*1000)/10+"%":"-";
+  const row=(n,g,i,t,bold)=>`<tr${bold?' style="background:var(--accent-soft);font-weight:800"':''}><td class="item-name">${esc(n)}</td><td style="text-align:right;color:var(--accent);font-weight:800">${fmt(g)}</td><td style="text-align:right">${fmt(i)}</td><td style="text-align:right">${fmt(t)}</td><td style="text-align:center">${ratio(g,t)}</td></tr>`;
+  el.innerHTML=`<div class="note-box">💰 단위 <b>천원</b> · <b style="color:var(--accent)">정부지원금</b>을 별도 열로 표시 · 출처: 협약 연구비 정리</div>
+    <div class="table-card"><div class="tbl-scroll"><table>
+    <thead><tr><th>과제</th><th style="text-align:right">정부지원금</th><th style="text-align:right">기관부담</th><th style="text-align:right">합계</th><th style="text-align:center">정부지원 비율</th></tr></thead>
+    <tbody>${b.map((x)=>row(x.name,x.gov,x.inst,x.total,false)).join("")}${row("합계",tg,ti,tt,true)}</tbody></table></div></div>`;
+}
 function buildSubprojects() {
   const nav = document.querySelector(".prim-nav");
   const wsBtn = nav.querySelector('[data-prim="ws"]');
@@ -832,6 +858,7 @@ function setDday() {
 /* ===================== INIT ===================== */
 renderChecklist(); renderSupplies(); renderTimeline(); renderWsGantt(); renderPmList(); renderPmGantt();
 renderQuant(QUANT_CHONG, "pm-quant-body", "cnt-pm-quant");
+renderBudget(BUDGET, "pm-budget-body", "cnt-pm-budget");
 buildSubprojects();
 updateProgress(); wire(); setDday(); setSection("chong");
 </script>
