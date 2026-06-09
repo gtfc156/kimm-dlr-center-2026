@@ -168,8 +168,10 @@
   .g-grid { position: absolute; top: 40px; bottom: 0; width: 1px; background: var(--line-soft); z-index: 0; pointer-events: none; }
   .g-event { position: absolute; top: 40px; bottom: 0; width: 2px; z-index: 3; pointer-events: none; }
   .g-event .lbl { position: absolute; top: 2px; left: 5px; font-size: 10.5px; font-weight: 800; white-space: nowrap; }
-  .g-mile { position: absolute; top: 40px; width: 0; z-index: 4; pointer-events: none; }
-  .g-mile .ml { position: absolute; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 800; color: var(--warn); white-space: nowrap; background: var(--surface); border: 1px solid #f0c89a; border-radius: 999px; padding: 1px 6px; box-shadow: var(--shadow); pointer-events: auto; }
+  .g-mile-pin { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); z-index: 5; font-size: 11px; font-weight: 800; line-height: 1; color: #d98e1f; white-space: nowrap; background: var(--surface); border: 1px solid #f0c89a; border-radius: 999px; padding: 2px 5px; box-shadow: var(--shadow); cursor: default; }
+  .g-mile-pin.top { top: 7px; transform: translateX(-50%); font-size: 10px; color: var(--warn); }
+  .g-mile-cap { padding: 7px 13px; font-size: 11.5px; color: var(--ink-soft); border-top: 1px dashed var(--line); background: #fffdf8; line-height: 1.95; }
+  .g-mile-cap b { color: #d98e1f; }
   .g-cat-row { background: #f9fbfe; border-bottom: 1px solid var(--line); }
   .g-cat-label { background: #f9fbfe; font-size: 13px; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 8px; }
   .g-cat-label .cat-num { width: 22px; height: 22px; font-size: 12px; }
@@ -424,12 +426,12 @@ const QUANT_CHONG = [
 /* GEN:QUANT_CHONG:END */
 /* GEN:MILESTONES_CHONG:START */
 const MILESTONES_CHONG = [
-    { name:"EKC 한-유럽 특별세션", date:"2026-07-15", note:"에너지/기계 분과" },
-    { name:"국제공동워크숍(KIMM 개최)", date:"2026-08-05", note:"DLR 참석" },
-    { name:"운영위원회", date:"2026-09-15", note:"연 1회 이상" },
-    { name:"수요기업 사업화 설명회", date:"2026-10-20", note:"국내 수요기업" },
-    { name:"DLR 기술교류·방문(독일)", date:"2026-11-10", note:"한·독 교류" },
-    { name:"2차년도 연차실적보고서 제출", date:"2027-02-15", note:"KETEP" } ];
+    { name:"EKC 한-유럽 특별세션", date:"2026-07-15", cat:"국제협력", note:"에너지/기계 분과" },
+    { name:"국제공동워크숍(KIMM 개최)", date:"2026-08-05", cat:"국제협력", note:"DLR 참석" },
+    { name:"운영위원회", date:"2026-09-15", cat:"운영·관리", note:"연 1회 이상" },
+    { name:"수요기업 사업화 설명회", date:"2026-10-20", cat:"성과관리", note:"국내 수요기업" },
+    { name:"DLR 기술교류·방문(독일)", date:"2026-11-10", cat:"국제협력", note:"한·독 교류" },
+    { name:"2차년도 연차실적보고서 제출", date:"2027-02-15", cat:"평가·보고", note:"KETEP" } ];
 /* GEN:MILESTONES_CHONG:END */
 /* GEN:BUDGET:START */
 const BUDGET = [
@@ -636,7 +638,7 @@ function renderPmGantt() {
   }
   let rows="";
   CATS.forEach((cat, ci) => {
-    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${cat.key}. ${esc(cat.title)}</div><div class="g-cat-track"></div></div>`;
+    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${cat.key}. ${esc(cat.title)}</div><div class="g-cat-track">${milePins(MILESTONES_CHONG, cat.key, cat.title, pct)}</div></div>`;
     cat.tasks.forEach((t, ii) => {
       const id=`t-${ci}-${ii}`, s=dIso(t.start), e=dIso(t.end);
       const L=pct(s), W=Math.max(pct(e)-L,1.0), done=!!state[id];
@@ -654,14 +656,30 @@ function renderPmGantt() {
   document.getElementById("pm-gantt-body").innerHTML =
     `<div class="g-axis-row"><div class="g-corner">구분 · 관리 업무</div><div class="g-axis">${ticks}</div></div>`
     + grids + rows + `<div class="g-event" style="left:${offset260(evP)};background:var(--danger)"><span class="lbl" style="color:var(--danger)">워크숍 8/5</span></div>` + todayLine
-    + renderMiles(typeof MILESTONES_CHONG!=="undefined"?MILESTONES_CHONG:[], pct);
+    + mileTop(MILESTONES_CHONG, CATS, pct) + mileCap(MILESTONES_CHONG);
 }
-function renderMiles(miles, pct) {
+// 주요일정 ★ — 관련 업무(구분) 카테고리 행 트랙에 배치
+function milePins(miles, catKey, catTitle, pct) {
   if (!miles || !miles.length) return "";
-  return miles.map((m, mi) => {
-    if (!m.date) return ""; const mp = pct(dIso(m.date)); if (mp < 0 || mp > 100) return "";
-    return `<div class="g-mile" style="left:${offset260(mp)}"><span class="ml" style="top:${4+(mi%3)*18}px" title="${esc(m.date)}${m.note?" · "+esc(m.note):""}">★ ${esc(m.name)}</span></div>`;
+  return miles.filter((m) => m.date && (m.cat===catKey || m.cat===catTitle)).map((m) => {
+    const mp = pct(dIso(m.date)); if (mp < 0 || mp > 100) return "";
+    return `<div class="g-mile-pin" style="left:${mp}%" title="★ ${esc(m.name)} · ${esc(m.date)}${m.note?" · "+esc(m.note):""}">★</div>`;
   }).join("");
+}
+// 매칭되는 구분이 없는 일정은 상단에 표시 (fallback)
+function mileTop(miles, cats, pct) {
+  const keys = new Set(); (cats||[]).forEach((c) => { keys.add(c.key); keys.add(c.title); });
+  return (miles||[]).filter((m) => m.date && !keys.has(m.cat)).map((m) => {
+    const mp = pct(dIso(m.date)); if (mp < 0 || mp > 100) return "";
+    return `<div class="g-mile-pin top" style="left:${offset260(mp)}" title="★ ${esc(m.name)} · ${esc(m.date)}${m.note?" · "+esc(m.note):""}">★ ${esc(m.name)}</div>`;
+  }).join("");
+}
+// 간트 아래 주요일정 범례 (날짜 + 이름)
+function mileCap(miles) {
+  const ms = (miles||[]).filter((m) => m.date);
+  if (!ms.length) return "";
+  const md = (d) => { const a = d.split("-"); return (+a[1]) + "/" + (+a[2]); };
+  return `<div class="g-mile-cap">★ 주요일정 &nbsp; ` + ms.map((m) => `<span title="${esc(m.cat||"")}${m.note?" · "+esc(m.note):""}"><b>${md(m.date)}</b> ${esc(m.name)}</span>`).join(" &nbsp;·&nbsp; ") + `</div>`;
 }
 
 /* ===================== RENDER: sub-projects (generic) ===================== */
@@ -695,7 +713,7 @@ function subRenderGantt(p) {
   }
   let rows="";
   p.cats.forEach((cat, ci) => {
-    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${esc(cat.key)}. ${esc(cat.title)}</div><div class="g-cat-track"></div></div>`;
+    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${esc(cat.key)}. ${esc(cat.title)}</div><div class="g-cat-track">${milePins(p.miles, cat.key, cat.title, pct)}</div></div>`;
     cat.tasks.forEach((t, ii) => {
       const id=`${p.prefix}-${ci}-${ii}`, s=dIso(t.start), e=dIso(t.end);
       const L=pct(s), W=Math.max(pct(e)-L,1.0), done=!!state[id];
@@ -711,7 +729,7 @@ function subRenderGantt(p) {
   const todayLine = (tp>=0&&tp<=100) ? `<div class="g-event" style="left:${offset260(tp)};background:var(--accent)"><span class="lbl" style="color:var(--accent)">오늘</span></div>` : "";
   el.innerHTML =
     `<div class="g-axis-row"><div class="g-corner">구분 · 수행 업무</div><div class="g-axis">${ticks}</div></div>`
-    + grids + rows + todayLine + renderMiles(p.miles||[], pct);
+    + grids + rows + todayLine + mileTop(p.miles, p.cats, pct) + mileCap(p.miles);
 }
 
 /* ===================== RENDER: 성과 (성능목표·실적 / 정량성과) ===================== */
