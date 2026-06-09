@@ -332,6 +332,262 @@ def write_xlsx(path, cats, with_juk):
     wb.save(path)
 
 
+# ============================ WORKSHOP (워크숍 8/5) ============================
+WS_FILE = "워크숍.xlsx"
+WS_LIST, WS_SUP, WS_TL = "준비업무", "물품준비", "당일타임라인"
+TL_CATS = ["티타임", "오프닝", "발표", "중식", "랩투어", "마무리"]
+OWNER_HEX = {"DW": "2563EB", "MK": "15A06A", "DK": "B3741A", "SH": "7A4FD0"}
+WS_G_START = datetime.date(2026, 6, 15)
+WS_G_END = datetime.date(2026, 8, 16)
+
+
+def md_str(v):
+    if isinstance(v, (datetime.datetime, datetime.date)):
+        return f"{v.month}/{v.day}"
+    s = str(v).strip()
+    m = re.match(r"^(\d{1,2})\s*[/.\-]\s*(\d{1,2})", s)
+    return f"{int(m.group(1))}/{int(m.group(2))}" if m else s
+
+
+def md_date(s):
+    m, d = (int(x) for x in str(s).split("/")[:2])
+    return datetime.date(2026, m, d)
+
+
+def _dash(v):
+    s = "" if v is None else str(v).strip()
+    return s if s else "—"
+
+
+def read_checklist(ws):
+    cats, by = [], {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        num, title, sub, task, owner, start, due, note, flag = (list(row) + [None] * 9)[:9]
+        task = "" if task is None else str(task).strip()
+        if not task:
+            continue
+        key = str(num).strip() if num not in (None, "") else (str(title).strip() if title else "")
+        if key not in by:
+            try:
+                nn = int(num)
+            except (TypeError, ValueError):
+                nn = len(cats) + 1
+            cat = {"num": nn, "title": str(title).strip() if title else key,
+                   "sub": str(sub).strip() if sub else "", "items": []}
+            by[key] = cat
+            cats.append(cat)
+        it = {"task": task, "owner": str(owner).strip() if owner else "",
+              "start": md_str(start), "due": md_str(due)}
+        if note and str(note).strip():
+            it["note"] = str(note).strip()
+        if flag and str(flag).strip():
+            it["flag"] = True
+        by[key]["items"].append(it)
+    return cats
+
+
+def read_supplies(ws):
+    grps, by = [], {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        grp, name, make, recv, appr, loc = (list(row) + [None] * 6)[:6]
+        name = "" if name is None else str(name).strip()
+        if not name:
+            continue
+        gk = str(grp).strip() if grp else (grps[-1]["grp"] if grps else "")
+        if gk not in by:
+            g = {"grp": gk, "rows": []}
+            by[gk] = g
+            grps.append(g)
+        by[gk]["rows"].append({"name": name, "make": _dash(make), "recv": _dash(recv),
+                               "appr": _dash(appr), "loc": str(loc).strip() if loc else ""})
+    return grps
+
+
+def read_timeline(ws):
+    out = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        time, cat, content, note, warn = (list(row) + [None] * 5)[:5]
+        content = "" if content is None else str(content).strip()
+        if not content:
+            continue
+        t = {"time": str(time).strip() if time else "", "cat": str(cat).strip() if cat else "",
+             "content": content}
+        if note and str(note).strip():
+            t["note"] = str(note).strip()
+        if warn and str(warn).strip():
+            t["warn"] = True
+        out.append(t)
+    return out
+
+
+def build_checklist_js(cats):
+    blocks = []
+    for c in cats:
+        items = []
+        for it in c["items"]:
+            p = [f"task:{js(it['task'])}", f"owner:{js(it['owner'])}",
+                 f"start:{js(it['start'])}", f"due:{js(it['due'])}", f"note:{js(it.get('note',''))}"]
+            if it.get("flag"):
+                p.append("flag:true")
+            items.append("    { " + ", ".join(p) + " }")
+        blocks.append(f"  {{ num:{int(c['num'])}, title:{js(c['title'])}, sub:{js(c.get('sub',''))}, items:[\n"
+                      + ",\n".join(items) + " ]}")
+    return "const CHECKLIST = [\n" + ",\n".join(blocks) + "\n];"
+
+
+def build_supplies_js(grps):
+    blocks = []
+    for g in grps:
+        rows = ["    { name:%s, make:%s, recv:%s, appr:%s, loc:%s }" %
+                (js(r["name"]), js(r["make"]), js(r["recv"]), js(r["appr"]), js(r["loc"])) for r in g["rows"]]
+        blocks.append(f"  {{ grp:{js(g['grp'])}, rows:[\n" + ",\n".join(rows) + " ]}")
+    return "const SUPPLIES = [\n" + ",\n".join(blocks) + "\n];"
+
+
+def build_timeline_js(rows):
+    out = []
+    for t in rows:
+        p = [f"time:{js(t['time'])}", f"cat:{js(t['cat'])}", f"content:{js(t['content'])}",
+             f"note:{js(t.get('note',''))}"]
+        if t.get("warn"):
+            p.append("warn:true")
+        out.append("  { " + ", ".join(p) + " }")
+    return "const TIMELINE = [\n" + ",\n".join(out) + "\n];"
+
+
+def _ws_head(ws, headers, widths):
+    navy = PatternFill("solid", fgColor="16335E")
+    hf = Font(name="Arial", bold=True, color="FFFFFF", size=10)
+    ce = Alignment(horizontal="center", vertical="center")
+    thin = Side(style="thin", color="D0D7E2")
+    bd = Border(left=thin, right=thin, top=thin, bottom=thin)
+    for c, h in enumerate(headers, 1):
+        cell = ws.cell(1, c, h)
+        cell.fill, cell.font, cell.alignment, cell.border = navy, hf, ce, bd
+    for i, w in enumerate(widths, 1):
+        ws.column_dimensions[ws.cell(1, i).column_letter].width = w
+    ws.freeze_panes = "A2"
+    return bd
+
+
+def write_ws_gantt_sheet(wb, checklist):
+    if GANTT_SHEET in wb.sheetnames:
+        del wb[GANTT_SHEET]
+    ws = wb.create_sheet(GANTT_SHEET)
+    weeks, d = [], WS_G_START
+    while d <= WS_G_END:
+        weeks.append(d)
+        d = d + datetime.timedelta(days=7)
+    body = Font(name="Arial", size=9)
+    thin = Side(style="thin", color="E6EAF0")
+    bd = Border(left=thin, right=thin, top=thin, bottom=thin)
+    ncols = 4 + len(weeks)
+    ws.cell(1, 1, "⚠ 자동 생성 탭 — 직접 편집하지 마세요. 일정은 '준비업무' 탭에서 수정 후 python sync_excel.py 실행.")
+    ws.cell(1, 1).font = Font(name="Arial", size=9, italic=True, color="B00000")
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ncols)
+    navy = PatternFill("solid", fgColor="16335E")
+    hf = Font(name="Arial", bold=True, color="FFFFFF", size=9)
+    ce = Alignment(horizontal="center", vertical="center")
+    hdr = ["구분", "업무", "담당", "기간"] + [f"{w.month}/{w.day}" for w in weeks]
+    for c, h in enumerate(hdr, 1):
+        cell = ws.cell(2, c, h)
+        cell.fill, cell.font, cell.alignment, cell.border = navy, hf, ce, bd
+    widths = [16, 40, 8, 12] + [5] * len(weeks)
+    for i, wd in enumerate(widths, 1):
+        ws.column_dimensions[ws.cell(2, i).column_letter].width = wd
+    r = 3
+    for c in checklist:
+        for ti, it in enumerate(c["items"]):
+            o = it["owner"].split(",")[0].strip() or "DW"
+            fill = PatternFill("solid", fgColor=OWNER_HEX.get(o, "2563EB"))
+            ws.cell(r, 1, c["title"] if ti == 0 else "")
+            ws.cell(r, 2, it["task"])
+            ws.cell(r, 3, it["owner"])
+            ws.cell(r, 4, f"{it['start']}~{it['due']}")
+            s, e = md_date(it["start"]), md_date(it["due"])
+            for wi, w in enumerate(weeks):
+                cell = ws.cell(r, 5 + wi)
+                cell.border = bd
+                if s <= w + datetime.timedelta(days=6) and e >= w:
+                    cell.fill = fill
+            for col in (1, 2, 3, 4):
+                ws.cell(r, col).font = body
+                ws.cell(r, col).border = bd
+            ws.cell(r, 2).alignment = Alignment(vertical="center", wrap_text=True)
+            r += 1
+    ws.freeze_panes = "E3"
+    return ws
+
+
+def write_workshop_xlsx(path, checklist, supplies, timeline):
+    wb = Workbook()
+    body = Font(name="Arial", size=10)
+    wrap = Alignment(vertical="center", wrap_text=True)
+    ce = Alignment(horizontal="center", vertical="center")
+    left = Alignment(vertical="center")
+    ws = wb.active
+    ws.title = WS_LIST
+    bd = _ws_head(ws, ["구분번호", "구분명", "세부설명", "업무", "담당", "시작", "마감", "비고", "⚠표시"],
+                  [9, 16, 18, 50, 10, 8, 8, 26, 8])
+    r = 2
+    for c in checklist:
+        for it in c["items"]:
+            ws.cell(r, 1, c["num"]); ws.cell(r, 2, c["title"]); ws.cell(r, 3, c.get("sub", ""))
+            ws.cell(r, 4, it["task"]); ws.cell(r, 5, it["owner"])
+            ws.cell(r, 6, it["start"]); ws.cell(r, 7, it["due"]); ws.cell(r, 8, it.get("note", ""))
+            ws.cell(r, 9, "⚠" if it.get("flag") else "")
+            for col in range(1, 10):
+                cc = ws.cell(r, col); cc.font = body; cc.border = bd
+                cc.alignment = wrap if col in (4, 8) else ce if col in (1, 5, 6, 7, 9) else left
+            r += 1
+    ws2 = wb.create_sheet(WS_SUP)
+    bd2 = _ws_head(ws2, ["구분", "물품명", "제작/구매", "수령", "결재", "세팅위치"], [16, 40, 12, 8, 8, 22])
+    r = 2
+    for g in supplies:
+        for row in g["rows"]:
+            ws2.cell(r, 1, g["grp"]); ws2.cell(r, 2, row["name"]); ws2.cell(r, 3, row["make"])
+            ws2.cell(r, 4, row["recv"]); ws2.cell(r, 5, row["appr"]); ws2.cell(r, 6, row["loc"])
+            for col in range(1, 7):
+                cc = ws2.cell(r, col); cc.font = body; cc.border = bd2
+                cc.alignment = wrap if col == 2 else ce if col in (3, 4, 5) else left
+            r += 1
+    ws3 = wb.create_sheet(WS_TL)
+    bd3 = _ws_head(ws3, ["시간", "구분", "내용", "비고", "⚠확정필요"], [14, 10, 40, 24, 10])
+    r = 2
+    for t in timeline:
+        ws3.cell(r, 1, t["time"]); ws3.cell(r, 2, t["cat"]); ws3.cell(r, 3, t["content"])
+        ws3.cell(r, 4, t.get("note", "")); ws3.cell(r, 5, "⚠" if t.get("warn") else "")
+        for col in range(1, 6):
+            cc = ws3.cell(r, col); cc.font = body; cc.border = bd3
+            cc.alignment = wrap if col in (3, 4) else ce if col in (1, 2, 5) else left
+        r += 1
+    dv = DataValidation(type="list", formula1='"%s"' % ",".join(TL_CATS), allow_blank=True)
+    ws3.add_data_validation(dv); dv.add(f"B2:B{max(r, 100)}")
+    write_ws_gantt_sheet(wb, checklist)
+    wb.active = wb[WS_LIST]
+    wb.save(path)
+
+
+def extract_html_arrays(names):
+    node = r"""
+const fs=require('fs');
+const html=fs.readFileSync(process.argv[1],'utf8');
+const s=html.match(/<script>([\s\S]*)<\/script>/)[1];
+function arr(src,name){let k=src.indexOf('const '+name);let i=src.indexOf('[',k),depth=0,inStr=null;
+ for(let j=i;j<src.length;j++){const c=src[j];
+  if(inStr){if(c===inStr&&src[j-1]!=='\\')inStr=null;continue;}
+  if(c==='"'||c==="'"||c==='`'){inStr=c;continue;}
+  if(c==='[')depth++;else if(c===']'){depth--;if(depth===0)return src.slice(i,j+1);}}}
+const out={};process.argv.slice(2).forEach(n=>{out[n]=eval('('+arr(s,n)+')');});
+console.log(JSON.stringify(out));
+"""
+    import subprocess
+    res = subprocess.run(["node", "-e", node, INDEX] + names, capture_output=True, text=True, encoding="utf-8")
+    if res.returncode != 0:
+        sys.exit("[오류] node 데이터 추출 실패:\n" + (res.stderr or res.stdout))
+    return json.loads(res.stdout)
+
+
 def do_init():
     os.makedirs(DATA, exist_ok=True)
     for p in PROJECTS:
@@ -339,6 +595,9 @@ def do_init():
         # SEED uses list-of-cat dicts with tasks already; reuse directly
         write_xlsx(os.path.join(DATA, p["file"]), cats, p.get("with_juk", False))
         print(f"  생성: data/{p['file']}  (카테고리 {len(cats)}개)")
+    d = extract_html_arrays(["CHECKLIST", "SUPPLIES", "TIMELINE"])
+    write_workshop_xlsx(os.path.join(DATA, WS_FILE), d["CHECKLIST"], d["SUPPLIES"], d["TIMELINE"])
+    print(f"  생성: data/{WS_FILE}  (준비업무·물품준비·당일타임라인 + 간트)")
     print("초기 엑셀 생성 완료. 이제 내용을 편집한 뒤 `python sync_excel.py`로 반영하세요.")
 
 
@@ -366,8 +625,22 @@ def do_sync():
             sub_defs.append((p, cats))
     html = inject(html, "CATS", build_cats_js(cats_chong))
     html = inject(html, "SUBPROJECTS", build_subprojects_js(sub_defs))
+    ws_path = os.path.join(DATA, WS_FILE)
+    if os.path.exists(ws_path):
+        wb = load_workbook(ws_path)
+        checklist = read_checklist(wb[WS_LIST] if WS_LIST in wb.sheetnames else wb.worksheets[0])
+        supplies = read_supplies(wb[WS_SUP]) if WS_SUP in wb.sheetnames else []
+        timeline = read_timeline(wb[WS_TL]) if WS_TL in wb.sheetnames else []
+        write_ws_gantt_sheet(wb, checklist)
+        wb.active = wb[WS_LIST] if WS_LIST in wb.sheetnames else wb.active
+        wb.save(ws_path)
+        html = inject(html, "CHECKLIST", build_checklist_js(checklist))
+        html = inject(html, "SUPPLIES", build_supplies_js(supplies))
+        html = inject(html, "TIMELINE", build_timeline_js(timeline))
+        wn = sum(len(c["items"]) for c in checklist)
+        print(f"  읽음: data/{WS_FILE}  준비업무 {wn}건 · 물품 {sum(len(g['rows']) for g in supplies)}건 · 타임라인 {len(timeline)}건")
     open(INDEX, "w", encoding="utf-8").write(html)
-    print(f"index.html 갱신 완료 (총 업무 {total}건). git push(gtfc156) 하면 사이트에 반영됩니다.")
+    print(f"index.html 갱신 완료 (과제 업무 {total}건 + 워크숍). git push(gtfc156) 하면 사이트에 반영됩니다.")
 
 
 if __name__ == "__main__":

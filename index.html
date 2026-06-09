@@ -288,6 +288,7 @@ const SECTIONS = {
     chips:["📅 <b>2026.8.5.(수)</b> 10:00–15:00","📍 한국기계연구원 <b>S1동 회의실</b>","🤝 주최 <b>KIMM</b> · 참석 <b>DLR</b>"] },
 };
 
+/* GEN:CHECKLIST:START */
 const CHECKLIST = [
   { num:1, title:"행사 기획·문서", sub:"", items:[
     { task:"워크숍 세부일정·발표자·시간배분 최종 확정 (총괄/기계연 4세부/DLR 3세부)", owner:"DW", start:"6/16", due:"7/3", note:"일정(안) 기준" },
@@ -332,9 +333,11 @@ const CHECKLIST = [
   { num:11, title:"비용 처리", sub:"", items:[
     { task:"인쇄비·기념품·다과·중식·회의비 등 정산 및 결재", owner:"DW", start:"8/6", due:"8/14", note:"총괄과제 인쇄비 등" } ]},
   { num:12, title:"최종 점검", sub:"", items:[
-    { task:"전일 전체 세팅·리허설 점검 (회의실·자료·물품·동선 일괄 확인)", owner:"DW, MK, DK", start:"8/4", due:"8/4", note:"체크리스트 일괄 검토" } ]},
+    { task:"전일 전체 세팅·리허설 점검 (회의실·자료·물품·동선 일괄 확인)", owner:"DW, MK, DK", start:"8/4", due:"8/4", note:"체크리스트 일괄 검토" } ]}
 ];
+/* GEN:CHECKLIST:END */
 
+/* GEN:SUPPLIES:START */
 const SUPPLIES = [
   { grp:"행사용품", rows:[
     { name:"플랜카드 (워크숍용, 벽걸이)", make:"DW", recv:"DW", appr:"DW", loc:"회의실 전면" },
@@ -353,9 +356,11 @@ const SUPPLIES = [
     { name:"기계연 기념품", make:"DW", recv:"DW", appr:"DW", loc:"선물 전달" } ]},
   { grp:"안내·의전", rows:[
     { name:"원내 안내 표지판", make:"DW", recv:"DW", appr:"—", loc:"동선 곳곳" },
-    { name:"방문자 출입증·주차증", make:"DW", recv:"DW", appr:"—", loc:"정문/접수대" } ]},
+    { name:"방문자 출입증·주차증", make:"DW", recv:"DW", appr:"—", loc:"정문/접수대" } ]}
 ];
+/* GEN:SUPPLIES:END */
 
+/* GEN:TIMELINE:START */
 const TIMELINE = [
   { time:"10:00–10:20", cat:"티타임", content:"원장님 티타임 / 기술교류회", note:"다과 세팅, 원장 비서실" },
   { time:"10:20–10:25", cat:"오프닝", content:"참석자 소개", note:"" },
@@ -369,8 +374,9 @@ const TIMELINE = [
   { time:"13:50–14:10", cat:"랩투어", content:"고온 수전해/연료전지 실험실", note:"담당자·안전·통역" },
   { time:"14:10–14:30", cat:"랩투어", content:"실험실 (미정 — 확정 필요)", note:"확정 필요", warn:true },
   { time:"14:30–14:50", cat:"랩투어", content:"실험실 (미정 — 확정 필요)", note:"확정 필요", warn:true },
-  { time:"14:50–15:00", cat:"마무리", content:"마무리 및 폐회 (이동시간 포함)", note:"기념품 전달" },
+  { time:"14:50–15:00", cat:"마무리", content:"마무리 및 폐회 (이동시간 포함)", note:"기념품 전달" }
 ];
+/* GEN:TIMELINE:END */
 
 const TAGS = { chong:{l:"총괄",c:"t-chong"}, op:{l:"운영위",c:"t-op"}, dlr:{l:"DLR",c:"t-dlr"}, ketep:{l:"전담",c:"t-ketep"} };
 /* GEN:CATS:START */
