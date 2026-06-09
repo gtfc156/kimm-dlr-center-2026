@@ -50,7 +50,7 @@
     border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: 7px 15px; }
   .dday .num { font-size: 20px; font-weight: 800; } .dday .lbl { font-size: 11px; color: #c6d6ee; }
 
-  .prim-nav { display: inline-flex; gap: 6px; margin-top: 18px; background: rgba(255,255,255,.10);
+  .prim-nav { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; background: rgba(255,255,255,.10);
     border: 1px solid rgba(255,255,255,.18); padding: 5px; border-radius: 13px; }
   .prim-btn { border: 0; background: transparent; color: #cfe0f7; font-size: 14.5px; font-weight: 700;
     padding: 9px 18px; border-radius: 9px; cursor: pointer; transition: all .15s ease;
@@ -373,33 +373,66 @@ const TIMELINE = [
 ];
 
 const TAGS = { chong:{l:"총괄",c:"t-chong"}, op:{l:"운영위",c:"t-op"}, dlr:{l:"DLR",c:"t-dlr"}, ketep:{l:"전담",c:"t-ketep"} };
+/* GEN:CATS:START */
 const CATS = [
   { key:"A", cls:"a", title:"사업 운영·관리", tasks:[
-    { name:"2차년도 협약 체결·연구비 카드 등록·집행계획 수립", juk:["chong"], start:"2026-01-02", end:"2026-03-12", note:"협약 3/12 기준", src:"std" },
-    { name:"참여연구원 등록·변경 및 인건비 계상 관리", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"연중 상시", src:"std" },
-    { name:"운영위원회 개최 (연 1회 이상)", juk:["op"], start:"2026-09-01", end:"2026-09-30", note:"KETEP 간사·국내전문가(가스터빈·수전해) 포함", src:"doc" },
-    { name:"세부과제(1~5) 진척도 정기 점검 회의", juk:["chong"], start:"2026-03-01", end:"2026-12-31", note:"분기별 (3·6·9·12월)", src:"doc" },
-    { name:"KPI 기반 진척도 모니터링·조기경보(Early Warning)", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"연차·분기 보고 체계", src:"doc" },
-    { name:"외부 전문가 Peer-review (내부 모니터링 병행)", juk:["chong"], start:"2026-10-01", end:"2026-11-30", note:"", src:"doc" },
-    { name:"부진과제 컨설팅·개선계획 수립 (필요시)", juk:["chong"], start:"2026-11-01", end:"2026-12-15", note:"조건부 수행", src:"doc" },
-    { name:"연구노트·보안등급·연구윤리 관리", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"보안등급 분류 기준", src:"doc" } ]},
+      { name:"2차년도 협약 체결·연구비 카드 등록·집행계획 수립", juk:["chong"], start:"2026-01-02", end:"2026-03-12", note:"협약 3/12 기준", src:"std" },
+      { name:"참여연구원 등록·변경 및 인건비 계상 관리", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"연중 상시", src:"std" },
+      { name:"운영위원회 개최 (연 1회 이상)", juk:["op"], start:"2026-09-01", end:"2026-09-30", note:"KETEP 간사·국내전문가(가스터빈·수전해) 포함", src:"doc" },
+      { name:"세부과제(1~5) 진척도 정기 점검 회의", juk:["chong"], start:"2026-03-01", end:"2026-12-31", note:"분기별 (3·6·9·12월)", src:"doc" },
+      { name:"KPI 기반 진척도 모니터링·조기경보(Early Warning)", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"연차·분기 보고 체계", src:"doc" },
+      { name:"외부 전문가 Peer-review (내부 모니터링 병행)", juk:["chong"], start:"2026-10-01", end:"2026-11-30", src:"doc" },
+      { name:"부진과제 컨설팅·개선계획 수립 (필요시)", juk:["chong"], start:"2026-11-01", end:"2026-12-15", note:"조건부 수행", src:"doc" },
+      { name:"연구노트·보안등급·연구윤리 관리", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"보안등급 분류 기준", src:"doc" } ]},
   { key:"B", cls:"b", title:"국제협력 (KIMM–DLR)", tasks:[
-    { name:"KIMM–DLR 협력채널 유지·실무 협의", juk:["chong","dlr"], start:"2026-01-05", end:"2026-12-31", note:"내부협의체 정기 운영", src:"doc" },
-    { name:"국제 워크숍 — 한국(기계연) 준비·개최", juk:["chong"], start:"2026-06-16", end:"2026-08-05", note:"8/5 개최 (워크숍 탭 참조)", src:"doc" },
-    { name:"국제 워크숍/기술교류 — 독일(DLR) 방문", juk:["chong","dlr"], start:"2026-10-01", end:"2026-11-15", note:"한·독 각 1회 이상", src:"doc" },
-    { name:"연구인력 교류 — DLR 파견·방문연구·세미나 지원", juk:["chong","dlr"], start:"2026-04-01", end:"2026-12-31", note:"하반기 집중", src:"doc" },
-    { name:"EKC 한-유럽 과학기술학술회의 특별세션 개설·발표", juk:["chong"], start:"2026-05-01", end:"2026-07-31", note:"에너지/기계 분과 세션", src:"doc" } ]},
+      { name:"KIMM–DLR 협력채널 유지·실무 협의", juk:["chong","dlr"], start:"2026-01-05", end:"2026-12-31", note:"내부협의체 정기 운영", src:"doc" },
+      { name:"국제 워크숍 — 한국(기계연) 준비·개최", juk:["chong"], start:"2026-06-16", end:"2026-08-05", note:"8/5 개최 (워크숍 탭 참조)", src:"doc" },
+      { name:"국제 워크숍/기술교류 — 독일(DLR) 방문", juk:["chong","dlr"], start:"2026-10-01", end:"2026-11-15", note:"한·독 각 1회 이상", src:"doc" },
+      { name:"연구인력 교류 — DLR 파견·방문연구·세미나 지원", juk:["chong","dlr"], start:"2026-04-01", end:"2026-12-31", note:"하반기 집중", src:"doc" },
+      { name:"EKC 한-유럽 과학기술학술회의 특별세션 개설·발표", juk:["chong"], start:"2026-05-01", end:"2026-07-31", note:"에너지/기계 분과 세션", src:"doc" } ]},
   { key:"C", cls:"c", title:"성과 관리", tasks:[
-    { name:"공동 논문(공동저자)·특허(공동출원) 성과 관리", juk:["chong","dlr"], start:"2026-03-01", end:"2026-12-31", note:"공동소유·활용 계약 기반", src:"doc" },
-    { name:"DLR 공동특허 출원·기술이전 체계 운영", juk:["chong","dlr"], start:"2026-06-01", end:"2026-12-31", note:"", src:"doc" },
-    { name:"수요기업 사업화 설명회 (단계별 1회)", juk:["chong"], start:"2026-09-01", end:"2026-10-31", note:"국내 수요기업 대상", src:"doc" },
-    { name:"성과집·기술 브로슈어 발간", juk:["chong"], start:"2026-11-01", end:"2026-12-31", note:"", src:"doc" } ]},
+      { name:"공동 논문(공동저자)·특허(공동출원) 성과 관리", juk:["chong","dlr"], start:"2026-03-01", end:"2026-12-31", note:"공동소유·활용 계약 기반", src:"doc" },
+      { name:"DLR 공동특허 출원·기술이전 체계 운영", juk:["chong","dlr"], start:"2026-06-01", end:"2026-12-31", src:"doc" },
+      { name:"수요기업 사업화 설명회 (단계별 1회)", juk:["chong"], start:"2026-09-01", end:"2026-10-31", note:"국내 수요기업 대상", src:"doc" },
+      { name:"성과집·기술 브로슈어 발간", juk:["chong"], start:"2026-11-01", end:"2026-12-31", src:"doc" } ]},
   { key:"D", cls:"d", title:"평가·보고 (연차 마감)", tasks:[
-    { name:"2차년도 연차실적보고서 작성·제출", juk:["chong"], start:"2026-12-01", end:"2027-02-15", note:"KETEP 제출", src:"std" },
-    { name:"2차년도 연구비 집행 점검·정산", juk:["chong"], start:"2027-01-02", end:"2027-02-28", note:"", src:"std" },
-    { name:"자체평가·연차평가(점검) 대응", juk:["chong"], start:"2026-12-15", end:"2027-01-31", note:"", src:"std" },
-    { name:"3차년도 사업계획서·협약 준비", juk:["chong"], start:"2026-11-01", end:"2027-03-15", note:"차년도 연속 수행", src:"std" } ]},
+      { name:"2차년도 연차실적보고서 작성·제출", juk:["chong"], start:"2026-12-01", end:"2027-02-15", note:"KETEP 제출", src:"std" },
+      { name:"2차년도 연구비 집행 점검·정산", juk:["chong"], start:"2027-01-02", end:"2027-02-28", src:"std" },
+      { name:"자체평가·연차평가(점검) 대응", juk:["chong"], start:"2026-12-15", end:"2027-01-31", src:"std" },
+      { name:"3차년도 사업계획서·협약 준비", juk:["chong"], start:"2026-11-01", end:"2027-03-15", note:"차년도 연속 수행", src:"std" } ]} ];
+/* GEN:CATS:END */
+
+/* ===== SUB-PROJECTS (세부1·2·3) — 엑셀 동기화로 채워지는 영역 =====
+   각 세부의 cats/tasks를 실제 업무·일정으로 교체하면 즉시 반영됩니다.
+   task 필드: name(필수), start/end "YYYY-MM-DD"(필수), note(선택), src "doc"|"std"(선택). */
+/* GEN:SUBPROJECTS:START */
+const SUBPROJECTS = [
+  { id:"sub1", prefix:"u1", nav:"🔬 세부1과제",
+    title:"세부1과제 · 2026년(2차년도) 수행 업무",
+    sub:"(편집 필요) 세부1과제 수행 업무와 일정 — 예시를 실제 내용으로 교체하세요",
+    chips:["🧩 <b>세부1</b> 과제","🤝 주관 <b>KIMM</b>","🗓️ 2차년도 <b>2026</b>"],
+    cats:[
+    { key:"1", cls:"a", title:"(예시) 업무 구분 1", tasks:[
+        { name:"(예시) 세부1 핵심 연구·실험 항목", start:"2026-01-05", end:"2026-06-30", note:"예시 — 실제 업무로 교체", src:"doc" },
+        { name:"(예시) 세부1 중간 점검·보고", start:"2026-07-01", end:"2026-09-30", note:"예시", src:"std" } ]} ] },
+  { id:"sub2", prefix:"u2", nav:"🧪 세부2과제",
+    title:"세부2과제 · 2026년(2차년도) 수행 업무",
+    sub:"(편집 필요) 세부2과제 수행 업무와 일정 — 예시를 실제 내용으로 교체하세요",
+    chips:["🧩 <b>세부2</b> 과제","🤝 주관 <b>KIMM</b>","🗓️ 2차년도 <b>2026</b>"],
+    cats:[
+    { key:"1", cls:"a", title:"(예시) 업무 구분 1", tasks:[
+        { name:"(예시) 세부2 핵심 연구·실험 항목", start:"2026-01-05", end:"2026-06-30", note:"예시 — 실제 업무로 교체", src:"doc" },
+        { name:"(예시) 세부2 중간 점검·보고", start:"2026-07-01", end:"2026-09-30", note:"예시", src:"std" } ]} ] },
+  { id:"sub3", prefix:"u3", nav:"⚙️ 세부3과제",
+    title:"세부3과제 · 2026년(2차년도) 수행 업무",
+    sub:"(편집 필요) 세부3과제 수행 업무와 일정 — 예시를 실제 내용으로 교체하세요",
+    chips:["🧩 <b>세부3</b> 과제","🤝 주관 <b>KIMM</b>","🗓️ 2차년도 <b>2026</b>"],
+    cats:[
+    { key:"1", cls:"a", title:"(예시) 업무 구분 1", tasks:[
+        { name:"(예시) 세부3 핵심 연구·실험 항목", start:"2026-01-05", end:"2026-06-30", note:"예시 — 실제 업무로 교체", src:"doc" },
+        { name:"(예시) 세부3 중간 점검·보고", start:"2026-07-01", end:"2026-09-30", note:"예시", src:"std" } ]} ] }
 ];
+/* GEN:SUBPROJECTS:END */
 
 /* ===================== STATE ===================== */
 const LS_KEY = "kimm_dlr_center_2026";
@@ -527,6 +560,87 @@ function renderPmGantt() {
     + grids + rows + `<div class="g-event" style="left:${offset260(evP)};background:var(--danger)"><span class="lbl" style="color:var(--danger)">워크숍 8/5</span></div>` + todayLine;
 }
 
+/* ===================== RENDER: sub-projects (generic) ===================== */
+function subRenderList(p) {
+  const el = document.getElementById(`${p.id}-list-body`); if (!el) return;
+  el.innerHTML = p.cats.map((cat, ci) => {
+    const items = cat.tasks.map((t, ii) => {
+      const id = `${p.prefix}-${ci}-${ii}`, done = !!state[id];
+      return `<div class="item ${done?"done":""}" data-id="${id}">
+        <div class="chk" role="checkbox" aria-checked="${done}" tabindex="0">✓</div>
+        <div class="it-body"><div class="it-task"><span class="nm">${esc(t.name)}</span>${t.src?" "+srcBadge(t.src):""}</div>
+          ${t.note?`<div class="it-note">${esc(t.note)}</div>`:""}</div>
+        <div class="it-meta"><div class="chips">${t.juk?tagChips(t.juk):""}</div><span class="period">${fmtIso(t.start,t.end)}</span></div></div>`;
+    }).join("");
+    return `<div class="cat" data-cat="${ci}"><div class="cat-head">
+        <span class="cat-badge ${cat.cls}">${esc(cat.key)}</span><div class="cat-title">${esc(cat.title)}</div>
+        <div class="cat-prog"><span class="mini" data-mini="${p.prefix}-${ci}"></span><span class="chev">▼</span></div>
+      </div><div class="items">${items}</div></div>`;
+  }).join("");
+}
+function subRenderGantt(p) {
+  const el = document.getElementById(`${p.id}-gantt-body`); if (!el) return;
+  const START = new Date(2026,0,1), END = new Date(2027,2,31), SPAN = END-START, DAY = 86400000;
+  const pct = (dt)=>((dt-START)/SPAN)*100;
+  let ticks="", grids="";
+  for (let y=2026; y<=2027; y++) for (let m=0; m<12; m++) {
+    const t=new Date(y,m,1); if (t<START||t>END) continue;
+    const pp=pct(t), isYr=(m===0);
+    ticks+=`<div class="g-tick ${pp===0?"first":""} ${isYr?"yr":""}" style="left:${pp}%">${isYr?`'${String(y).slice(2)} ${m+1}월`:`${m+1}월`}</div>`;
+    grids+=`<div class="g-grid" style="left:${offset260(pp)}"></div>`;
+  }
+  let rows="";
+  p.cats.forEach((cat, ci) => {
+    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${esc(cat.key)}. ${esc(cat.title)}</div><div class="g-cat-track"></div></div>`;
+    cat.tasks.forEach((t, ii) => {
+      const id=`${p.prefix}-${ci}-${ii}`, s=dIso(t.start), e=dIso(t.end);
+      const L=pct(s), W=Math.max(pct(e)-L,1.0), days=Math.max(1,Math.round((e-s)/DAY)), done=!!state[id];
+      rows+=`<div class="g-row ${done?"done":""}" data-id="${id}" title="${esc(t.name)}  ·  ${fmtIso(t.start,t.end)} (약 ${days}일)">
+        <div class="g-label"><span class="gl-id">${esc(cat.key)}${ii+1}</span><span class="gl-task">${esc(t.name)}</span></div>
+        <div class="g-track"><div class="g-bar ${cat.cls}" style="left:${L}%;width:${W}%"></div></div></div>`;
+    });
+  });
+  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate()), tp=pct(today);
+  const todayLine = (tp>=0&&tp<=100) ? `<div class="g-event" style="left:${offset260(tp)};background:var(--accent)"><span class="lbl" style="color:var(--accent)">오늘</span></div>` : "";
+  el.innerHTML =
+    `<div class="g-axis-row"><div class="g-corner">구분 · 수행 업무</div><div class="g-axis">${ticks}</div></div>`
+    + grids + rows + todayLine;
+}
+function buildSubprojects() {
+  const nav = document.querySelector(".prim-nav");
+  const wsBtn = nav.querySelector('[data-prim="ws"]');
+  const tabsWrap = document.querySelector(".tabs-wrap");
+  const main = document.querySelector("main");
+  SUBPROJECTS.forEach((p) => {
+    SECTIONS[p.id] = { title:p.title, sub:p.sub, chips:p.chips };
+    const btn = document.createElement("button");
+    btn.className = "prim-btn"; btn.dataset.prim = p.id; btn.innerHTML = p.nav;
+    nav.insertBefore(btn, wsBtn);
+    const tabs = document.createElement("div");
+    tabs.className = "tabs"; tabs.dataset.group = p.id; tabs.hidden = true;
+    tabs.innerHTML =
+      `<button class="tab active" data-tab="${p.id}-list">📋 관리 업무 리스트 <span class="count" id="cnt-${p.id}-list"></span></button>`+
+      `<button class="tab" data-tab="${p.id}-gantt">📊 간트 차트 (2026) <span class="count" id="cnt-${p.id}-gantt"></span></button>`;
+    tabsWrap.appendChild(tabs);
+    const lp = document.createElement("section");
+    lp.className = "panel"; lp.id = `${p.id}-list`;
+    lp.innerHTML =
+      `<div class="note-box">📌 <b>(편집 필요)</b> 예시 항목입니다. 과제별 엑셀(<b>${esc(p.id)}.xlsx</b>)에 내용을 쓰고 동기화하면 이 목록이 채워집니다.</div>`+
+      `<div class="progress-card"><span class="ptext">완료 <b id="${p.id}-li-done">0</b> / <span id="${p.id}-li-total">0</span></span>`+
+      `<div class="bar"><span id="${p.id}-li-bar"></span></div><button class="reset-btn" data-reset="${p.prefix}">초기화</button></div>`+
+      `<div id="${p.id}-list-body"></div>`;
+    const gp = document.createElement("section");
+    gp.className = "panel"; gp.id = `${p.id}-gantt`;
+    gp.innerHTML =
+      `<div class="legend"><span style="font-weight:700;color:var(--ink-soft)">구분</span><span class="li" style="color:var(--muted)">막대 클릭 = 완료 · 파랑 = 오늘</span></div>`+
+      `<div class="gantt-scroll"><div class="gantt-inner" id="${p.id}-gantt-body"></div></div>`;
+    main.appendChild(lp); main.appendChild(gp);
+    subRenderList(p); subRenderGantt(p);
+    document.getElementById(`${p.id}-list-body`).addEventListener("click", (e)=>{ const h=e.target.closest(".cat-head"); if(h){h.parentElement.classList.toggle("collapsed");return;} const it=e.target.closest(".item"); if(it){toggle(it.dataset.id); syncAll();} });
+    document.getElementById(`${p.id}-gantt-body`).addEventListener("click", (e)=>{ const r=e.target.closest(".g-row"); if(r&&r.dataset.id){toggle(r.dataset.id); syncAll();} });
+  });
+}
+
 /* ===================== PROGRESS + SYNC ===================== */
 function updateProgress() {
   let cl=0,clT=0; CHECKLIST.forEach((c,ci)=>{ let d=0; c.items.forEach((_,ii)=>{clT++; if(state[`c-${ci}-${ii}`]){cl++;d++;}}); const m=document.querySelector(`[data-cmini="${ci}"]`); if(m) m.textContent=`${d}/${c.items.length}`; });
@@ -539,6 +653,10 @@ function updateProgress() {
   set("pm-li-done",pm); set("pm-li-total",pmT); setW("pm-li-bar", pmT?(pm/pmT*100)+"%":"0");
   set("cnt-checklist",`${cl}/${clT}`); set("cnt-supplies",`${sp}/${spT}`); set("cnt-timeline",TIMELINE.length); set("cnt-ws-gantt",`${cl}/${clT}`);
   set("cnt-pm-list",`${pm}/${pmT}`); set("cnt-pm-gantt",`${pm}/${pmT}`);
+  SUBPROJECTS.forEach((p)=>{ let d=0,tot=0;
+    p.cats.forEach((c,ci)=>{ let cd=0; c.tasks.forEach((_,ii)=>{ tot++; if(state[`${p.prefix}-${ci}-${ii}`]){d++;cd++;} }); const m=document.querySelector(`[data-mini="${p.prefix}-${ci}"]`); if(m) m.textContent=`${cd}/${c.tasks.length}`; });
+    set(`${p.id}-li-done`,d); set(`${p.id}-li-total`,tot); setW(`${p.id}-li-bar`, tot?(d/tot*100)+"%":"0");
+    set(`cnt-${p.id}-list`,`${d}/${tot}`); set(`cnt-${p.id}-gantt`,`${d}/${tot}`); });
 }
 function toggle(id) { state[id]=!state[id]; if(!state[id]) delete state[id]; save(); }
 function syncAll() {
@@ -593,6 +711,7 @@ function setDday() {
 
 /* ===================== INIT ===================== */
 renderChecklist(); renderSupplies(); renderTimeline(); renderWsGantt(); renderPmList(); renderPmGantt();
+buildSubprojects();
 updateProgress(); wire(); setDday(); setSection("chong");
 </script>
 </body>

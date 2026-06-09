@@ -1,2 +1,4 @@
 .omc/
 _*.png
+~$*.xlsx
+__pycache__/
