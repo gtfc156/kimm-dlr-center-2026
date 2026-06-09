@@ -18,7 +18,7 @@
   - 주관: 총괄/운영위/DLR/전담 중 쉼표로 구분 (세부과제는 보통 비움).
 과제 제목·아이콘 등 표시 메타데이터는 아래 PROJECTS 설정에서 바꿉니다.
 """
-import os, re, sys, json, datetime
+import os, re, sys, json, datetime, calendar
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -29,7 +29,12 @@ INDEX = os.path.join(BASE, "index.html")
 DATA = os.path.join(BASE, "data")
 
 HEADERS = ["구분키", "구분명", "업무명", "시작일", "종료일", "비고", "출처", "주관"]
+LIST_SHEET = "업무리스트"
+GANTT_SHEET = "간트차트"
 CLS = ["a", "b", "c", "d"]
+CLS_HEX = {"a": "2563EB", "b": "7A4FD0", "c": "15A06A", "d": "D9822B"}
+GANTT_START = (2026, 1)
+GANTT_END = (2027, 3)
 SRC_TO_KO = {"doc": "계획서", "std": "행정"}
 KO_TO_SRC = {"계획서": "doc", "행정": "std", "doc": "doc", "std": "std", "계획": "doc"}
 JUK_TO_KO = {"chong": "총괄", "op": "운영위", "dlr": "DLR", "ketep": "전담"}
@@ -130,9 +135,7 @@ def norm_juk(v):
 
 
 # ───────────────────────── read xlsx → cats ─────────────────────────
-def read_project(path):
-    wb = load_workbook(path, data_only=True)
-    ws = wb.active
+def read_ws(ws):
     cats, by_key = [], {}
     for row in ws.iter_rows(min_row=2, values_only=True):
         if row is None:
@@ -207,11 +210,77 @@ def inject(html, marker, new_code):
     return pat.sub(lambda m: m.group(1) + new_code + m.group(2), html)
 
 
+# ───────────────────────── gantt 미리보기 시트 (자동 생성) ─────────────────────────
+def month_list():
+    out, (y, m), (ey, em) = [], GANTT_START, GANTT_END
+    while (y, m) <= (ey, em):
+        out.append((y, m))
+        m += 1
+        if m > 12:
+            y, m = y + 1, 1
+    return out
+
+
+def _date(s):
+    y, m, d = (int(x) for x in s.split("-"))
+    return datetime.date(y, m, d)
+
+
+def write_gantt_sheet(wb, cats):
+    if GANTT_SHEET in wb.sheetnames:
+        del wb[GANTT_SHEET]
+    ws = wb.create_sheet(GANTT_SHEET)
+    months = month_list()
+    ncols = 3 + len(months)
+    head_font = Font(name="Arial", bold=True, color="FFFFFF", size=9)
+    body_font = Font(name="Arial", size=9)
+    navy = PatternFill("solid", fgColor="16335E")
+    thin = Side(style="thin", color="E6EAF0")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    center = Alignment(horizontal="center", vertical="center")
+    ws.cell(1, 1, "⚠ 자동 생성 탭 — 직접 편집하지 마세요. 일정은 '업무리스트' 탭에서 수정 후 python sync_excel.py 실행.")
+    ws.cell(1, 1).font = Font(name="Arial", size=9, italic=True, color="B00000")
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ncols)
+    hdr = ["구분", "업무명", "기간"] + [(f"'{str(y)[2:]} {m}월" if m == 1 else f"{m}월") for (y, m) in months]
+    for c, h in enumerate(hdr, 1):
+        cell = ws.cell(2, c, h)
+        cell.fill, cell.font, cell.alignment, cell.border = navy, head_font, center, border
+    r = 3
+    for ci, cat in enumerate(cats):
+        cls = cat.get("cls") or CLS[ci % 4]
+        fill = PatternFill("solid", fgColor=CLS_HEX.get(cls, "2563EB"))
+        for ti, t in enumerate(cat["tasks"]):
+            ws.cell(r, 1, cat["title"] if ti == 0 else "")
+            ws.cell(r, 2, t["name"])
+            ws.cell(r, 3, f"{t['start']}~{t['end']}")
+            s, e = _date(t["start"]), _date(t["end"])
+            for mi, (y, m) in enumerate(months):
+                cell = ws.cell(r, 4 + mi)
+                cell.border = border
+                mstart = datetime.date(y, m, 1)
+                mend = datetime.date(y, m, calendar.monthrange(y, m)[1])
+                if s <= mend and e >= mstart:
+                    cell.fill = fill
+            for col in (1, 2, 3):
+                ws.cell(r, col).font = body_font
+                ws.cell(r, col).border = border
+            ws.cell(r, 2).alignment = Alignment(vertical="center", wrap_text=True)
+            ws.cell(r, 3).alignment = center
+            r += 1
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 42
+    ws.column_dimensions["C"].width = 22
+    for i in range(len(months)):
+        ws.column_dimensions[ws.cell(2, 4 + i).column_letter].width = 6
+    ws.freeze_panes = "D3"
+    return ws
+
+
 # ───────────────────────── write xlsx (--init) ─────────────────────────
 def write_xlsx(path, cats, with_juk):
     wb = Workbook()
     ws = wb.active
-    ws.title = "업무"
+    ws.title = LIST_SHEET
     navy = PatternFill("solid", fgColor="16335E")
     head_font = Font(name="Arial", bold=True, color="FFFFFF", size=10)
     body_font = Font(name="Arial", size=10)
@@ -258,6 +327,8 @@ def write_xlsx(path, cats, with_juk):
     dv = DataValidation(type="list", formula1='"계획서,행정"', allow_blank=True)
     ws.add_data_validation(dv)
     dv.add(f"G2:G{max(r, 200)}")
+    write_gantt_sheet(wb, cats)
+    wb.active = wb[LIST_SHEET]
     wb.save(path)
 
 
@@ -280,7 +351,12 @@ def do_sync():
         path = os.path.join(DATA, p["file"])
         if not os.path.exists(path):
             sys.exit(f"[오류] {path} 없음. 먼저 `python sync_excel.py --init` 실행.")
-        cats = read_project(path)
+        wb = load_workbook(path)
+        ws = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
+        cats = read_ws(ws)
+        write_gantt_sheet(wb, cats)          # 간트 미리보기 탭 자동 갱신
+        wb.active = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
+        wb.save(path)
         n = sum(len(c["tasks"]) for c in cats)
         total += n
         print(f"  읽음: data/{p['file']}  카테고리 {len(cats)}개 · 업무 {n}건")
