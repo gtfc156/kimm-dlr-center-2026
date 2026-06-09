@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>KIMM–DLR 국제공동연구센터 · 총괄과제 & 워크숍 통합</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root {
+    --ink: #16243b; --ink-soft: #41526b; --muted: #8493a8;
+    --line: #e6eaf0; --line-soft: #eef1f6; --paper: #f4f6fa; --surface: #ffffff;
+    --navy: #16335e; --navy-2: #1f4e89; --accent: #2563eb; --accent-soft: #eaf1fe;
+    --good: #15a06a; --good-soft: #e6f6ee; --warn: #d9822b; --warn-soft: #fdf1e3; --danger: #d94b4b;
+    --dw: #2563eb; --dw-soft: #e7effe; --mk: #15a06a; --mk-soft: #e3f6ed;
+    --dk: #b3741a; --dk-soft: #fbf0dc; --sh: #7a4fd0; --sh-soft: #f0e9fc;
+    --ca: #2563eb; --cb: #7a4fd0; --cc: #15a06a; --cd: #d9822b;
+    --t-chong: #2563eb; --t-chong-soft: #e7effe; --t-op: #0d9488; --t-op-soft: #d9f3ef;
+    --t-dlr: #7a4fd0; --t-dlr-soft: #f0e9fc; --t-ketep: #b3741a; --t-ketep-soft: #fbf0dc;
+    --shadow: 0 1px 2px rgba(16,36,59,.05), 0 8px 24px rgba(16,36,59,.06);
+    --radius: 16px;
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+      "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+    -webkit-font-smoothing: antialiased; line-height: 1.55; letter-spacing: -0.01em; }
+
+  header.hero {
+    background: radial-gradient(1200px 300px at 85% -40%, rgba(74,124,196,.45), transparent 60%),
+      linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #fff; padding: 34px 22px 22px;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
+    letter-spacing: .04em; color: #cfe0f7; background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.18); padding: 5px 12px; border-radius: 999px; }
+  h1.title { margin: 14px 0 6px; font-size: clamp(21px, 4vw, 32px); font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1.22; }
+  .subnote { color: #b9cae4; font-size: 14px; margin: 0 0 16px; max-width: 770px; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .meta-chip { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16); padding: 8px 13px; border-radius: 11px;
+    font-size: 13.5px; font-weight: 500; color: #eaf1fb; }
+  .meta-chip b { color: #fff; font-weight: 700; }
+  .dday { margin-left: auto; text-align: right; background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: 7px 15px; }
+  .dday .num { font-size: 20px; font-weight: 800; } .dday .lbl { font-size: 11px; color: #c6d6ee; }
+
+  .prim-nav { display: inline-flex; gap: 6px; margin-top: 18px; background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.18); padding: 5px; border-radius: 13px; }
+  .prim-btn { border: 0; background: transparent; color: #cfe0f7; font-size: 14.5px; font-weight: 700;
+    padding: 9px 18px; border-radius: 9px; cursor: pointer; transition: all .15s ease;
+    display: inline-flex; align-items: center; gap: 8px; }
+  .prim-btn:hover { color: #fff; }
+  .prim-btn.active { background: #fff; color: var(--navy); box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 0 22px 70px; }
+
+  .tabs-wrap { position: sticky; top: 0; z-index: 30; background: rgba(244,246,250,.86);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); margin: 0 -22px 22px; padding: 11px 22px; }
+  .tabs { display: flex; gap: 8px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; }
+  .tabs[hidden] { display: none; }
+  .tab { border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+    padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all .16s ease; display: inline-flex; align-items: center; gap: 8px; }
+  .tab:hover { border-color: #c9d4e4; color: var(--ink); }
+  .tab.active { background: var(--navy); color: #fff; border-color: var(--navy); box-shadow: var(--shadow); }
+  .tab .count { font-size: 11.5px; background: rgba(0,0,0,.07); padding: 1px 8px; border-radius: 999px; font-weight: 700; }
+  .tab.active .count { background: rgba(255,255,255,.22); }
+
+  .panel { display: none; animation: fade .25s ease; }
+  .panel.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none;} }
+
+  .note-box { background: var(--accent-soft); border: 1px solid #cfe0fc; color: #2c5cb8; border-radius: 10px;
+    padding: 9px 14px; font-size: 12.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; line-height: 1.6; }
+  .note-box.warn { background: var(--warn-soft); border-color: #f0c89a; color: #9a6418; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 12.5px;
+    color: var(--muted); margin-bottom: 16px; padding: 0 4px; }
+  .legend .li { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 3px; }
+
+  .progress-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 20px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .progress-card .ptext { font-size: 14px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+  .progress-card .ptext b { color: var(--accent); font-size: 16px; }
+  .bar { flex: 1; min-width: 160px; height: 10px; background: var(--line-soft); border-radius: 999px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), #4f86f0); border-radius: 999px; transition: width .4s ease; }
+  .reset-btn { border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+    font-size: 12.5px; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .reset-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+  /* chips / tags */
+  .owner, .tag { font-size: 11.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; letter-spacing: .02em; white-space: nowrap; }
+  .owner.DW { background: var(--dw-soft); color: var(--dw); } .owner.MK { background: var(--mk-soft); color: var(--mk); }
+  .owner.DK { background: var(--dk-soft); color: var(--dk); } .owner.SH { background: var(--sh-soft); color: var(--sh); }
+  .tag.t-chong { background: var(--t-chong-soft); color: var(--t-chong); } .tag.t-op { background: var(--t-op-soft); color: var(--t-op); }
+  .tag.t-dlr { background: var(--t-dlr-soft); color: var(--t-dlr); } .tag.t-ketep { background: var(--t-ketep-soft); color: var(--t-ketep); }
+  .src { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
+  .src.doc { background: #eef6ee; color: #2f8f4e; } .src.std { background: #f0f1f4; color: #6b7787; }
+
+  /* category sections (shared list) */
+  .cat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; }
+  .cat-head { display: flex; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line-soft); cursor: pointer; user-select: none; }
+  .cat-num, .cat-badge { flex: none; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px; }
+  .cat-num { background: var(--navy); }
+  .cat-badge.a { background: var(--ca); } .cat-badge.b { background: var(--cb); } .cat-badge.c { background: var(--cc); } .cat-badge.d { background: var(--cd); }
+  .cat-title { font-size: 16px; font-weight: 700; } .cat-sub { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+  .cat-prog { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .cat-prog .mini { font-size: 12px; font-weight: 700; color: var(--ink-soft); background: var(--line-soft); padding: 3px 9px; border-radius: 999px; }
+  .cat-prog .chev { color: var(--muted); transition: transform .2s ease; font-size: 13px; }
+  .cat.collapsed .chev { transform: rotate(-90deg); } .cat.collapsed .items { display: none; }
+
+  .item { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--line-soft); align-items: start; transition: background .15s ease; }
+  .item:last-child { border-bottom: 0; } .item:hover { background: #fafbfd; } .item.done { background: var(--good-soft); }
+  .chk { flex: none; width: 22px; height: 22px; border-radius: 7px; border: 2px solid #c4d0e0; background: #fff; cursor: pointer; display: grid; place-items: center; margin-top: 1px; transition: all .15s ease; font-size: 13px; color: transparent; }
+  .chk:hover { border-color: var(--good); } .item.done .chk { background: var(--good); border-color: var(--good); color: #fff; }
+  .it-body { min-width: 0; }
+  .it-task { font-size: 14.5px; font-weight: 600; color: var(--ink); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .item.done .it-task .nm, .item.done .it-task.plain { text-decoration: line-through; text-decoration-color: rgba(21,160,106,.5); color: var(--ink-soft); }
+  .it-note { font-size: 12.5px; color: var(--muted); margin-top: 4px; } .it-note.flag { color: var(--danger); font-weight: 600; }
+  .it-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+  .chips { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .due, .period { font-size: 12px; font-weight: 700; color: var(--ink-soft); background: var(--line-soft); padding: 3px 9px; border-radius: 8px; white-space: nowrap; }
+  .due.aug { background: var(--warn-soft); color: var(--warn); }
+
+  /* supplies table */
+  .table-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .tbl-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+  thead th { background: #f7f9fc; color: var(--ink-soft); font-weight: 700; font-size: 12.5px; text-align: left; padding: 12px 14px; border-bottom: 2px solid var(--line); }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; } tbody tr:hover { background: #fafbfd; } tbody tr.done { background: var(--good-soft); }
+  .grp-cell { font-weight: 800; color: var(--navy); font-size: 13px; background: #f9fbfe; white-space: nowrap; }
+  .item-name { font-weight: 600; color: var(--ink); } .pill { display: inline-block; } .dash { color: var(--muted); } .loc { color: var(--ink-soft); font-size: 12.5px; }
+  .s-chk { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; user-select: none; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .s-chk .box { width: 19px; height: 19px; border-radius: 6px; border: 2px solid #c4d0e0; background: #fff; display: grid; place-items: center; color: transparent; font-size: 12px; transition: all .15s ease; }
+  tr.done .s-chk { color: var(--good); } tr.done .s-chk .box { background: var(--good); border-color: var(--good); color: #fff; }
+
+  /* timeline */
+  .timeline { position: relative; }
+  .tl-item { position: relative; display: grid; grid-template-columns: 96px 1fr; gap: 16px; }
+  .tl-time { font-size: 13px; font-weight: 700; color: var(--ink-soft); text-align: right; padding-top: 16px; white-space: nowrap; }
+  .tl-line { position: relative; } .tl-line::before { content: ""; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+  .tl-item:last-child .tl-line::before { bottom: auto; height: 24px; }
+  .tl-dot { position: absolute; left: 0; top: 18px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); z-index: 2; }
+  .tl-card { background: var(--surface); border: 1px solid var(--line); border-radius: 13px; padding: 12px 15px; margin: 8px 0 8px 28px; box-shadow: var(--shadow); }
+  .tl-card.warn { border-color: #f0c89a; background: var(--warn-soft); }
+  .tl-cat { display: inline-block; font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 999px; margin-bottom: 6px; }
+  .tl-content { font-size: 14.5px; font-weight: 600; color: var(--ink); } .tl-note { font-size: 12.5px; color: var(--muted); margin-top: 4px; } .tl-card.warn .tl-note { color: var(--warn); font-weight: 600; }
+  .c-티타임 { background: #e3f6ed; color: #15a06a; } .c-오프닝 { background: #e7effe; color: #2563eb; } .c-발표 { background: #f0e9fc; color: #7a4fd0; }
+  .c-마무리 { background: #eef1f6; color: #41526b; } .c-중식 { background: #fbf0dc; color: #b3741a; } .c-랩투어 { background: #fde6e6; color: #d94b4b; }
+
+  /* gantt (shared) */
+  .gantt-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .gantt-inner { min-width: 1000px; position: relative; }
+  .g-axis-row, .g-cat-row, .g-row { display: grid; grid-template-columns: 260px 1fr; }
+  .g-corner, .g-label, .g-cat-label { position: sticky; left: 0; z-index: 4; background: var(--surface); border-right: 1px solid var(--line); padding: 9px 13px; }
+  .g-corner { background: #f7f9fc; border-bottom: 2px solid var(--line); font-size: 12px; font-weight: 700; color: var(--ink-soft); display: flex; align-items: center; }
+  .g-axis { position: relative; height: 40px; background: #f7f9fc; border-bottom: 2px solid var(--line); }
+  .g-tick { position: absolute; top: 0; height: 100%; border-left: 1px solid var(--line); font-size: 10.5px; color: var(--muted); padding: 5px 0 0 4px; white-space: nowrap; }
+  .g-tick.first { border-left: 0; } .g-tick.yr { color: var(--navy); font-weight: 800; }
+  .g-grid { position: absolute; top: 40px; bottom: 0; width: 1px; background: var(--line-soft); z-index: 0; pointer-events: none; }
+  .g-event { position: absolute; top: 40px; bottom: 0; width: 2px; z-index: 3; pointer-events: none; }
+  .g-event .lbl { position: absolute; top: 2px; left: 5px; font-size: 10.5px; font-weight: 800; white-space: nowrap; }
+  .g-cat-row { background: #f9fbfe; border-bottom: 1px solid var(--line); }
+  .g-cat-label { background: #f9fbfe; font-size: 13px; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .g-cat-label .cat-num { width: 22px; height: 22px; font-size: 12px; }
+  .g-cat-track { position: relative; min-height: 28px; }
+  .g-row { border-bottom: 1px solid var(--line-soft); } .g-row:last-child { border-bottom: 0; }
+  .g-row:hover { background: #fafbfd; } .g-row:hover .g-label { background: #fafbfd; }
+  .g-label { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink); min-width: 0; }
+  .g-label .gl-id { font-size: 11px; font-weight: 800; color: var(--muted); flex: none; width: 26px; }
+  .g-label .gl-task { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .g-track { position: relative; cursor: pointer; min-height: 34px; }
+  .g-bar { position: absolute; top: 50%; transform: translateY(-50%); height: 15px; border-radius: 5px; min-width: 7px; box-shadow: 0 1px 2px rgba(0,0,0,.14); z-index: 1; transition: filter .15s ease; }
+  .g-track:hover .g-bar { filter: brightness(1.07); }
+  .g-bar.DW { background: linear-gradient(90deg, #6c97f4, var(--dw)); } .g-bar.MK { background: linear-gradient(90deg, #3cc088, var(--mk)); }
+  .g-bar.DK { background: linear-gradient(90deg, #d6a043, var(--dk)); } .g-bar.SH { background: linear-gradient(90deg, #9f78e0, var(--sh)); }
+  .g-bar.a { background: linear-gradient(90deg, #6c97f4, var(--ca)); } .g-bar.b { background: linear-gradient(90deg, #9f78e0, var(--cb)); }
+  .g-bar.c { background: linear-gradient(90deg, #3cc088, var(--cc)); } .g-bar.d { background: linear-gradient(90deg, #e8a85a, var(--cd)); }
+  .g-row.done .g-bar { background: var(--good); background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0 4px, transparent 4px 8px); }
+  .g-row.done .gl-task { text-decoration: line-through; color: var(--muted); }
+
+  footer { max-width: 1100px; margin: 0 auto; padding: 26px 22px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); text-align: center; line-height: 1.7; }
+
+  @media (max-width: 680px) {
+    .item { grid-template-columns: 24px 1fr; }
+    .it-meta { grid-column: 2; flex-direction: row; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+    .dday { margin-left: 0; margin-top: 12px; } .tl-item { grid-template-columns: 70px 1fr; gap: 8px; }
+  }
+  @media print { .tabs-wrap, .prim-nav, .reset-btn, .note-box { display: none !important; } .panel { display: block !important; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">🇰🇷 KIMM × DLR 🇩🇪 · 저비용 수소생산·무탄소발전 국제공동연구센터</span>
+    <h1 class="title" id="h-title"></h1>
+    <p class="subnote" id="h-sub"></p>
+    <div class="meta-row"><span id="h-chips" style="display:contents"></span>
+      <span class="dday"><div class="num" id="ddayNum">D-—</div><div class="lbl">to 워크숍 8/5</div></span></div>
+    <div class="prim-nav">
+      <button class="prim-btn active" data-prim="chong">🗂 총괄과제</button>
+      <button class="prim-btn" data-prim="ws">🎪 워크숍 8/5</button>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs" data-group="chong">
+    <button class="tab active" data-tab="pm-list">📋 관리 업무 리스트 <span class="count" id="cnt-pm-list"></span></button>
+    <button class="tab" data-tab="pm-gantt">📊 간트 차트 (2026) <span class="count" id="cnt-pm-gantt"></span></button>
+  </div>
+  <div class="tabs" data-group="ws" hidden>
+    <button class="tab active" data-tab="checklist">✅ 준비 업무 <span class="count" id="cnt-checklist"></span></button>
+    <button class="tab" data-tab="supplies">📦 물품 준비 <span class="count" id="cnt-supplies"></span></button>
+    <button class="tab" data-tab="timeline">🗓️ 당일 타임라인 <span class="count" id="cnt-timeline"></span></button>
+    <button class="tab" data-tab="ws-gantt">📊 간트 차트 <span class="count" id="cnt-ws-gantt"></span></button>
+  </div>
+</div>
+
+<main>
+  <!-- ===== 총괄과제 ===== -->
+  <section class="panel active" id="pm-list">
+    <div class="note-box warn">📌 일정(시점)은 사업계획서에 <b>명시된 활동</b>(운영위 연1회·국제워크숍·분기 점검·KPI)과 <b>표준 국가R&D 연차 행정주기</b>를 종합한 <b>(안)</b>입니다. <span class="src doc" style="margin:0 2px">📄 계획서</span> = 명시 / <span class="src std" style="margin:0 2px">⚙ 행정</span> = 표준 절차</div>
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">주관</span>
+      <span class="li"><span class="tag t-chong">총괄</span> 총괄과제팀</span><span class="li"><span class="tag t-op">운영위</span> 운영위원회</span>
+      <span class="li"><span class="tag t-dlr">DLR</span> 독일 공동</span><span class="li"><span class="tag t-ketep">전담</span> KETEP</span></div>
+    <div class="progress-card"><span class="ptext">완료 <b id="pm-li-done">0</b> / <span id="pm-li-total">0</span></span>
+      <div class="bar"><span id="pm-li-bar"></span></div><button class="reset-btn" data-reset="t">초기화</button></div>
+    <div id="pm-list-body"></div>
+  </section>
+  <section class="panel" id="pm-gantt">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">구분</span>
+      <span class="li"><span class="dot" style="background:var(--ca)"></span> A 운영·관리</span>
+      <span class="li"><span class="dot" style="background:var(--cb)"></span> B 국제협력</span>
+      <span class="li"><span class="dot" style="background:var(--cc)"></span> C 성과관리</span>
+      <span class="li"><span class="dot" style="background:var(--cd)"></span> D 평가·보고</span>
+      <span class="li" style="color:var(--muted)">막대 클릭 = 완료 · 빨강 = 워크숍 8/5 · 파랑 = 오늘</span></div>
+    <div class="gantt-scroll"><div class="gantt-inner" id="pm-gantt-body"></div></div>
+  </section>
+
+  <!-- ===== 워크숍 ===== -->
+  <section class="panel" id="checklist">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
+      <span class="li"><span class="owner DW">DW</span> 도원</span><span class="li"><span class="owner MK">MK</span> 민국</span><span class="li"><span class="owner DK">DK</span> 동근</span></div>
+    <div class="progress-card"><span class="ptext">완료 <b id="cl-done">0</b> / <span id="cl-total">0</span></span>
+      <div class="bar"><span id="cl-bar"></span></div><button class="reset-btn" data-reset="c">초기화</button></div>
+    <div id="checklist-body"></div>
+  </section>
+  <section class="panel" id="supplies">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
+      <span class="li"><span class="owner DW">DW</span> 도원 (물품 준비 전담)</span><span class="li" style="color:var(--muted)">제작/구매 → 수령 → 결재 → 세팅</span></div>
+    <div class="progress-card"><span class="ptext">세팅 완료 <b id="sp-done">0</b> / <span id="sp-total">0</span></span>
+      <div class="bar"><span id="sp-bar"></span></div><button class="reset-btn" data-reset="s">초기화</button></div>
+    <div class="table-card"><div class="tbl-scroll"><table>
+      <thead><tr><th>구분</th><th>물품명</th><th>제작/구매</th><th>수령</th><th>결재</th><th>세팅 위치</th><th style="text-align:center">진행</th></tr></thead>
+      <tbody id="supplies-body"></tbody></table></div></div>
+  </section>
+  <section class="panel" id="timeline">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">8/5(수) 진행 타임라인</span><span style="color:var(--muted)">일정(안) · ⚠️ = 확정 필요</span></div>
+    <div class="timeline" id="timeline-body"></div>
+  </section>
+  <section class="panel" id="ws-gantt">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
+      <span class="li"><span class="owner DW">DW</span> 도원</span><span class="li"><span class="owner MK">MK</span> 민국</span><span class="li"><span class="owner DK">DK</span> 동근</span>
+      <span class="li" style="color:var(--muted)">막대 오른쪽 끝 = 마감(안) · 빨강 = 8/5</span></div>
+    <div class="gantt-scroll"><div class="gantt-inner" id="ws-gantt-body"></div></div>
+  </section>
+</main>
+
+<footer>KIMM–DLR 저비용 수소생산·무탄소발전 국제공동연구센터 · 총괄과제 관리 & 워크숍 통합<br />진행상황 체크는 보는 사람의 브라우저에 각자 저장됩니다.</footer>
+
+<script>
+/* ===================== DATA ===================== */
+const SECTIONS = {
+  chong: { title:"총괄과제 · 2026년(2차년도) 과제 관리 수행 업무",
+    sub:"사업계획서(2차년도 협약용, 2026-03-12) 기반 · 총괄과제 운영·관리 역할에서 도출한 2026년 관리 업무와 일정(안)",
+    chips:["🗓️ 1단계 <b>2025–2027</b> 중 2차년도","🤝 주관 <b>KIMM</b> · 해외 <b>DLR</b> · 전담 <b>KETEP</b>","🧩 세부과제 <b>5개</b> 통합관리"] },
+  ws: { title:"2026 KIMM–DLR 국제공동워크숍 준비 체크리스트",
+    sub:"기계연(KIMM) 개최 · 작년(독일 개최) 체크리스트를 개최측(호스트) 기준으로 보완",
+    chips:["📅 <b>2026.8.5.(수)</b> 10:00–15:00","📍 한국기계연구원 <b>S1동 회의실</b>","🤝 주최 <b>KIMM</b> · 참석 <b>DLR</b>"] },
+};
+
+const CHECKLIST = [
+  { num:1, title:"행사 기획·문서", sub:"", items:[
+    { task:"워크숍 세부일정·발표자·시간배분 최종 확정 (총괄/기계연 4세부/DLR 3세부)", owner:"DW", start:"6/16", due:"7/3", note:"일정(안) 기준" },
+    { task:"참석자 명단 확정 (KIMM/DLR 양측, 직책·영문성명)", owner:"DW", start:"7/3", due:"7/17", note:"명찰·중식·기념품 수량 기준" },
+    { task:"행사 내용·예산 확정 후 내부결재 기안 (회의실, 다과·중식, 인쇄물, 기념품, 회의비 등)", owner:"DW", start:"7/1", due:"7/10", note:"" } ]},
+  { num:2, title:"회의실·세팅", sub:"S1동 회의실", items:[
+    { task:"S1동 회의실 예약 및 좌석 배치(안) 확정", owner:"DW", start:"6/22", due:"7/3", note:"양측 인원 기준" },
+    { task:"빔프로젝터·스크린·노트북·음향·포인터 사전 점검 / 발표자료 호환 테스트", owner:"DW", start:"8/3", due:"8/4", note:"전일 리허설" },
+    { task:"좌석 명패(영문 포함)·좌석 배치도 제작", owner:"DW", start:"7/22", due:"7/29", note:"" },
+    { task:"다과·음료 세팅", owner:"DW", start:"7/29", due:"8/4", note:"08/5 오전 비치" } ]},
+  { num:3, title:"발표자료", sub:"", items:[
+    { task:"총괄발표 자료 취합", owner:"DW", start:"7/17", due:"7/29", note:"" },
+    { task:"기계연 1~4세부 발표자료 취합", owner:"DW", start:"7/10", due:"7/29", note:"영문 권장" },
+    { task:"DLR 1~3세부 발표자료 수신(영문)", owner:"DW", start:"7/8", due:"7/29", note:"DLR측 요청" },
+    { task:"발표자료 통합본 구성·사전 점검(순서·영문·표기 통일)", owner:"DW", start:"7/30", due:"8/4", note:"" } ]},
+  { num:4, title:"인쇄물", sub:"플랜카드·입간판", items:[
+    { task:"플랜카드·탁상용 입간판 문구 작성", owner:"DW, DK", start:"7/3", due:"7/10", note:"" },
+    { task:"1차 시안 내부 검토 → 디자인 의뢰(마이스피플)", owner:"DW", start:"7/11", due:"7/15", note:"작년 동일 업체" },
+    { task:"업체 시안 검토·수정 → 디자인 최종 확정", owner:"DW, DK", start:"7/15", due:"7/22", note:"" },
+    { task:"플랜카드·입간판 최종 인쇄 요청 및 수령", owner:"DW", start:"7/22", due:"7/29", note:"" } ]},
+  { num:5, title:"명찰·국기", sub:"", items:[
+    { task:"명찰·명찰 줄 시안 제작 → 마이스피플 디자인 의뢰", owner:"DW", start:"7/9", due:"7/15", note:"명단 확정 후" },
+    { task:"명찰·명찰 줄 디자인 최종·수량 확정 → 인쇄 요청·수령", owner:"DW", start:"7/22", due:"7/29", note:"여분 포함" },
+    { task:"한국·독일 국기 및 받침대(탁상용) 준비", owner:"DW", start:"7/13", due:"7/17", note:"" } ]},
+  { num:6, title:"기념품·선물", sub:"", items:[
+    { task:"DLR 참석자용 기념품 확보", owner:"DW", start:"7/10", due:"7/24", note:"명단 확정 먼저" } ]},
+  { num:7, title:"중식", sub:"12:00~13:30", items:[
+    { task:"식당 예약 또는 케이터링 확정 (이동시간 포함)", owner:"DW", start:"7/13", due:"7/22", note:"원내/인근" },
+    { task:"메뉴 확정 — DLR측 식이 제한(채식·할랄·알레르기) 사전 확인", owner:"DW", start:"7/8", due:"7/22", note:"독일 손님 필수 확인", flag:true },
+    { task:"좌석·이동 동선 안내", owner:"DW", start:"8/1", due:"8/4", note:"" } ]},
+  { num:8, title:"랩투어", sub:"13:30~14:50, 4개", items:[
+    { task:"랩투어 실험실 4곳 확정 (가스터빈 연소기 / 고온 수전해·연료전지 / 추가 2곳)", owner:"MK, DW", start:"6/19", due:"7/10", note:"" },
+    { task:"각 실험실 담당자 협의·일정 공유 및 영문 설명자료 준비", owner:"DW", start:"7/11", due:"7/24", note:"" },
+    { task:"출입 동선·이동시간 점검", owner:"DW", start:"7/28", due:"7/31", note:"" } ]},
+  { num:9, title:"의전·영접", sub:"DLR 손님", items:[
+    { task:"대전 숙소 안내 (필요 시)", owner:"DW", start:"7/18", due:"7/24", note:"DLR 도착 일정 확인" },
+    { task:"방문자 출입 등록·주차 안내 (연구원 보안 절차)", owner:"DW", start:"7/25", due:"7/31", note:"" },
+    { task:"원내 안내 표지판·동선 표시", owner:"DW", start:"7/31", due:"8/4", note:"" } ]},
+  { num:10, title:"사진·기록", sub:"", items:[
+    { task:"기념 촬영 담당 지정 및 구도·단체사진 위치 사전 확인", owner:"DW", start:"8/1", due:"8/4", note:"11:50~12:00 촬영" },
+    { task:"행사 진행 사진·기록 정리", owner:"DW", start:"8/5", due:"8/5", note:"행사 당일" } ]},
+  { num:11, title:"비용 처리", sub:"", items:[
+    { task:"인쇄비·기념품·다과·중식·회의비 등 정산 및 결재", owner:"DW", start:"8/6", due:"8/14", note:"총괄과제 인쇄비 등" } ]},
+  { num:12, title:"최종 점검", sub:"", items:[
+    { task:"전일 전체 세팅·리허설 점검 (회의실·자료·물품·동선 일괄 확인)", owner:"DW, MK, DK", start:"8/4", due:"8/4", note:"체크리스트 일괄 검토" } ]},
+];
+
+const SUPPLIES = [
+  { grp:"행사용품", rows:[
+    { name:"플랜카드 (워크숍용, 벽걸이)", make:"DW", recv:"DW", appr:"DW", loc:"회의실 전면" },
+    { name:"플랜카드 (기술교류회 2종, 들고찍기)", make:"DW", recv:"DW", appr:"DW", loc:"회의실/랩투어" },
+    { name:"탁상용 입간판", make:"DW", recv:"DW", appr:"DW", loc:"회의실 입구" },
+    { name:"명찰 (여분 포함)", make:"DW", recv:"DW", appr:"DW", loc:"접수대" },
+    { name:"국기 + 받침대 (한국·독일)", make:"DW", recv:"DW", appr:"DW", loc:"회의실 단상" } ]},
+  { grp:"회의물품", rows:[
+    { name:"필기구 세트 (펜 접시 포함)", make:"DW", recv:"DW", appr:"DW", loc:"좌석 비치" },
+    { name:"메모지", make:"DW", recv:"DW", appr:"DW", loc:"좌석 비치" },
+    { name:"좌석 명패 (영문)", make:"DW", recv:"DW", appr:"DW", loc:"좌석 비치" } ]},
+  { grp:"다과·중식", rows:[
+    { name:"다과·음료", make:"DW", recv:"DW", appr:"DW", loc:"회의실" },
+    { name:"중식 (식당 예약/케이터링)", make:"DW", recv:"—", appr:"DW", loc:"식당" } ]},
+  { grp:"기념품", rows:[
+    { name:"기계연 기념품", make:"DW", recv:"DW", appr:"DW", loc:"선물 전달" } ]},
+  { grp:"안내·의전", rows:[
+    { name:"원내 안내 표지판", make:"DW", recv:"DW", appr:"—", loc:"동선 곳곳" },
+    { name:"방문자 출입증·주차증", make:"DW", recv:"DW", appr:"—", loc:"정문/접수대" } ]},
+];
+
+const TIMELINE = [
+  { time:"10:00–10:20", cat:"티타임", content:"원장님 티타임 / 기술교류회", note:"다과 세팅, 원장 비서실" },
+  { time:"10:20–10:25", cat:"오프닝", content:"참석자 소개", note:"" },
+  { time:"10:25–10:30", cat:"오프닝", content:"KIMM 총괄책임자 인사말", note:"" },
+  { time:"10:30–10:40", cat:"발표", content:"총괄발표", note:"자료 사전 점검" },
+  { time:"10:40–11:20", cat:"발표", content:"기계연 1~4세부 과제 발표 (각 10분)", note:"" },
+  { time:"11:20–11:50", cat:"발표", content:"DLR 1~3세부 과제 발표 (각 10분)", note:"영문 자료" },
+  { time:"11:50–12:00", cat:"마무리", content:"'26년 일정 협의 및 기념 촬영", note:"단체사진 위치 사전확인" },
+  { time:"12:00–13:30", cat:"중식", content:"점심 식사 (이동시간 포함)", note:"식당 예약·식이제한" },
+  { time:"13:30–13:50", cat:"랩투어", content:"가스터빈 연소기 실험실", note:"담당자·안전·통역" },
+  { time:"13:50–14:10", cat:"랩투어", content:"고온 수전해/연료전지 실험실", note:"담당자·안전·통역" },
+  { time:"14:10–14:30", cat:"랩투어", content:"실험실 (미정 — 확정 필요)", note:"확정 필요", warn:true },
+  { time:"14:30–14:50", cat:"랩투어", content:"실험실 (미정 — 확정 필요)", note:"확정 필요", warn:true },
+  { time:"14:50–15:00", cat:"마무리", content:"마무리 및 폐회 (이동시간 포함)", note:"기념품 전달" },
+];
+
+const TAGS = { chong:{l:"총괄",c:"t-chong"}, op:{l:"운영위",c:"t-op"}, dlr:{l:"DLR",c:"t-dlr"}, ketep:{l:"전담",c:"t-ketep"} };
+const CATS = [
+  { key:"A", cls:"a", title:"사업 운영·관리", tasks:[
+    { name:"2차년도 협약 체결·연구비 카드 등록·집행계획 수립", juk:["chong"], start:"2026-01-02", end:"2026-03-12", note:"협약 3/12 기준", src:"std" },
+    { name:"참여연구원 등록·변경 및 인건비 계상 관리", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"연중 상시", src:"std" },
+    { name:"운영위원회 개최 (연 1회 이상)", juk:["op"], start:"2026-09-01", end:"2026-09-30", note:"KETEP 간사·국내전문가(가스터빈·수전해) 포함", src:"doc" },
+    { name:"세부과제(1~5) 진척도 정기 점검 회의", juk:["chong"], start:"2026-03-01", end:"2026-12-31", note:"분기별 (3·6·9·12월)", src:"doc" },
+    { name:"KPI 기반 진척도 모니터링·조기경보(Early Warning)", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"연차·분기 보고 체계", src:"doc" },
+    { name:"외부 전문가 Peer-review (내부 모니터링 병행)", juk:["chong"], start:"2026-10-01", end:"2026-11-30", note:"", src:"doc" },
+    { name:"부진과제 컨설팅·개선계획 수립 (필요시)", juk:["chong"], start:"2026-11-01", end:"2026-12-15", note:"조건부 수행", src:"doc" },
+    { name:"연구노트·보안등급·연구윤리 관리", juk:["chong"], start:"2026-01-05", end:"2026-12-31", note:"보안등급 분류 기준", src:"doc" } ]},
+  { key:"B", cls:"b", title:"국제협력 (KIMM–DLR)", tasks:[
+    { name:"KIMM–DLR 협력채널 유지·실무 협의", juk:["chong","dlr"], start:"2026-01-05", end:"2026-12-31", note:"내부협의체 정기 운영", src:"doc" },
+    { name:"국제 워크숍 — 한국(기계연) 준비·개최", juk:["chong"], start:"2026-06-16", end:"2026-08-05", note:"8/5 개최 (워크숍 탭 참조)", src:"doc" },
+    { name:"국제 워크숍/기술교류 — 독일(DLR) 방문", juk:["chong","dlr"], start:"2026-10-01", end:"2026-11-15", note:"한·독 각 1회 이상", src:"doc" },
+    { name:"연구인력 교류 — DLR 파견·방문연구·세미나 지원", juk:["chong","dlr"], start:"2026-04-01", end:"2026-12-31", note:"하반기 집중", src:"doc" },
+    { name:"EKC 한-유럽 과학기술학술회의 특별세션 개설·발표", juk:["chong"], start:"2026-05-01", end:"2026-07-31", note:"에너지/기계 분과 세션", src:"doc" } ]},
+  { key:"C", cls:"c", title:"성과 관리", tasks:[
+    { name:"공동 논문(공동저자)·특허(공동출원) 성과 관리", juk:["chong","dlr"], start:"2026-03-01", end:"2026-12-31", note:"공동소유·활용 계약 기반", src:"doc" },
+    { name:"DLR 공동특허 출원·기술이전 체계 운영", juk:["chong","dlr"], start:"2026-06-01", end:"2026-12-31", note:"", src:"doc" },
+    { name:"수요기업 사업화 설명회 (단계별 1회)", juk:["chong"], start:"2026-09-01", end:"2026-10-31", note:"국내 수요기업 대상", src:"doc" },
+    { name:"성과집·기술 브로슈어 발간", juk:["chong"], start:"2026-11-01", end:"2026-12-31", note:"", src:"doc" } ]},
+  { key:"D", cls:"d", title:"평가·보고 (연차 마감)", tasks:[
+    { name:"2차년도 연차실적보고서 작성·제출", juk:["chong"], start:"2026-12-01", end:"2027-02-15", note:"KETEP 제출", src:"std" },
+    { name:"2차년도 연구비 집행 점검·정산", juk:["chong"], start:"2027-01-02", end:"2027-02-28", note:"", src:"std" },
+    { name:"자체평가·연차평가(점검) 대응", juk:["chong"], start:"2026-12-15", end:"2027-01-31", note:"", src:"std" },
+    { name:"3차년도 사업계획서·협약 준비", juk:["chong"], start:"2026-11-01", end:"2027-03-15", note:"차년도 연속 수행", src:"std" } ]},
+];
+
+/* ===================== STATE ===================== */
+const LS_KEY = "kimm_dlr_center_2026";
+let state = {}; try { state = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch (e) { state = {}; }
+const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {} };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const ownerChips = (o) => o.split(",").map((x)=>x.trim()).filter(Boolean).map((x)=>`<span class="owner ${x}">${esc(x)}</span>`).join("");
+const tagChips = (a) => a.map((k)=>`<span class="tag ${TAGS[k].c}">${esc(TAGS[k].l)}</span>`).join("");
+const srcBadge = (s) => s==="doc" ? '<span class="src doc">📄 계획서</span>' : '<span class="src std">⚙ 행정</span>';
+const mkCell = (v) => v==="—" ? '<span class="dash">—</span>' : `<span class="pill owner ${esc(v)}">${esc(v)}</span>`;
+const mdSlash = (s) => { const [m,d]=s.split("/").map(Number); return new Date(2026, m-1, d); };
+const dIso = (s) => { const [y,m,d]=s.split("-").map(Number); return new Date(y, m-1, d); };
+const offset260 = (p) => `calc(260px + (100% - 260px) * ${p/100})`;
+const fmtIso = (s,e) => { const f=(dt)=>`${dt.getMonth()+1}/${dt.getDate()}`; const yr=dIso(e).getFullYear()===2027?" ('27)":""; return `${f(dIso(s))}~${f(dIso(e))}${yr}`; };
+
+/* ===================== RENDER: workshop checklist ===================== */
+function renderChecklist() {
+  document.getElementById("checklist-body").innerHTML = CHECKLIST.map((cat, ci) => {
+    const items = cat.items.map((it, ii) => {
+      const id = `c-${ci}-${ii}`, done = !!state[id], aug = it.due.startsWith("8/");
+      return `<div class="item ${done?"done":""}" data-id="${id}">
+        <div class="chk" role="checkbox" aria-checked="${done}" tabindex="0">✓</div>
+        <div class="it-body"><div class="it-task plain">${esc(it.task)}</div>
+          ${it.note?`<div class="it-note ${it.flag?"flag":""}">${it.flag?"⚠ ":""}${esc(it.note)}</div>`:""}</div>
+        <div class="it-meta"><div class="chips">${ownerChips(it.owner)}</div><span class="due ${aug?"aug":""}">${esc(it.due)}</span></div>
+      </div>`;
+    }).join("");
+    return `<div class="cat" data-cat="${ci}"><div class="cat-head">
+        <span class="cat-num">${cat.num}</span>
+        <div><div class="cat-title">${esc(cat.title)}</div>${cat.sub?`<div class="cat-sub">${esc(cat.sub)}</div>`:""}</div>
+        <div class="cat-prog"><span class="mini" data-cmini="${ci}"></span><span class="chev">▼</span></div>
+      </div><div class="items">${items}</div></div>`;
+  }).join("");
+}
+function renderSupplies() {
+  let html = "";
+  SUPPLIES.forEach((g, gi) => g.rows.forEach((r, ri) => {
+    const id = `s-${gi}-${ri}`, done = !!state[id];
+    html += `<tr class="${done?"done":""}" data-id="${id}">
+      ${ri===0?`<td class="grp-cell" rowspan="${g.rows.length}">${esc(g.grp)}</td>`:""}
+      <td class="item-name">${esc(r.name)}</td><td>${mkCell(r.make)}</td><td>${mkCell(r.recv)}</td><td>${mkCell(r.appr)}</td>
+      <td class="loc">${esc(r.loc)}</td>
+      <td style="text-align:center"><span class="s-chk" role="checkbox" aria-checked="${done}" tabindex="0"><span class="box">✓</span>${done?"완료":"대기"}</span></td></tr>`;
+  }));
+  document.getElementById("supplies-body").innerHTML = html;
+}
+function renderTimeline() {
+  document.getElementById("timeline-body").innerHTML = TIMELINE.map((t) => `
+    <div class="tl-item"><div class="tl-time">${esc(t.time)}</div>
+      <div class="tl-line"><span class="tl-dot" style="border-color:${t.warn?"#d94b4b":"var(--accent)"}"></span>
+        <div class="tl-card ${t.warn?"warn":""}"><span class="tl-cat c-${t.cat}">${esc(t.cat)}</span>
+          <div class="tl-content">${esc(t.content)}</div>${t.note?`<div class="tl-note">${t.warn?"⚠ ":""}${esc(t.note)}</div>`:""}</div></div></div>`).join("");
+}
+
+/* ===================== RENDER: PM list ===================== */
+function renderPmList() {
+  document.getElementById("pm-list-body").innerHTML = CATS.map((cat, ci) => {
+    const items = cat.tasks.map((t, ii) => {
+      const id = `t-${ci}-${ii}`, done = !!state[id];
+      return `<div class="item ${done?"done":""}" data-id="${id}">
+        <div class="chk" role="checkbox" aria-checked="${done}" tabindex="0">✓</div>
+        <div class="it-body"><div class="it-task"><span class="nm">${esc(t.name)}</span> ${srcBadge(t.src)}</div>
+          ${t.note?`<div class="it-note">${esc(t.note)}</div>`:""}</div>
+        <div class="it-meta"><div class="chips">${tagChips(t.juk)}</div><span class="period">${fmtIso(t.start,t.end)}</span></div></div>`;
+    }).join("");
+    return `<div class="cat" data-cat="${ci}"><div class="cat-head">
+        <span class="cat-badge ${cat.cls}">${cat.key}</span><div class="cat-title">${esc(cat.title)}</div>
+        <div class="cat-prog"><span class="mini" data-tmini="${ci}"></span><span class="chev">▼</span></div>
+      </div><div class="items">${items}</div></div>`;
+  }).join("");
+}
+
+/* ===================== RENDER: gantts ===================== */
+function renderWsGantt() {
+  const START = new Date(2026,5,15), END = new Date(2026,7,16), SPAN = END-START, DAY = 86400000;
+  const pct = (dt)=>((dt-START)/SPAN)*100;
+  let ticks="", grids="";
+  for (let t=new Date(START); t<=END; t=new Date(t.getTime()+7*DAY)) {
+    const p=pct(t);
+    ticks+=`<div class="g-tick ${p===0?"first":""}" style="left:${p}%">${t.getMonth()+1}/${t.getDate()}</div>`;
+    grids+=`<div class="g-grid" style="left:${offset260(p)}"></div>`;
+  }
+  let rows="";
+  CHECKLIST.forEach((cat, ci) => {
+    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="cat-num">${cat.num}</span>${esc(cat.title)}</div><div class="g-cat-track"></div></div>`;
+    cat.items.forEach((it, ii) => {
+      const id=`c-${ci}-${ii}`, o=it.owner.split(",")[0].trim(), s=mdSlash(it.start), e=mdSlash(it.due);
+      const L=pct(s), W=Math.max(pct(e)-L,1.2), days=Math.max(1,Math.round((e-s)/DAY)), done=!!state[id];
+      rows+=`<div class="g-row ${done?"done":""}" data-id="${id}" title="${esc(it.task)}  ·  ${esc(it.start)}~${esc(it.due)} (약 ${days}일)  ·  담당 ${esc(it.owner)}">
+        <div class="g-label"><span class="owner ${o}">${esc(o)}</span><span class="gl-task">${esc(it.task)}</span></div>
+        <div class="g-track"><div class="g-bar ${o}" style="left:${L}%;width:${W}%"></div></div></div>`;
+    });
+  });
+  const evP = pct(new Date(2026,7,5));
+  document.getElementById("ws-gantt-body").innerHTML =
+    `<div class="g-axis-row"><div class="g-corner">구분 · 준비 업무</div><div class="g-axis">${ticks}</div></div>`
+    + grids + rows + `<div class="g-event" style="left:${offset260(evP)};background:var(--danger)"><span class="lbl" style="color:var(--danger)">8/5 행사</span></div>`;
+}
+function renderPmGantt() {
+  const START = new Date(2026,0,1), END = new Date(2027,2,31), SPAN = END-START, DAY = 86400000;
+  const pct = (dt)=>((dt-START)/SPAN)*100;
+  let ticks="", grids="";
+  for (let y=2026; y<=2027; y++) for (let m=0; m<12; m++) {
+    const t=new Date(y,m,1); if (t<START||t>END) continue;
+    const p=pct(t), isYr=(m===0);
+    ticks+=`<div class="g-tick ${p===0?"first":""} ${isYr?"yr":""}" style="left:${p}%">${isYr?`'${String(y).slice(2)} ${m+1}월`:`${m+1}월`}</div>`;
+    grids+=`<div class="g-grid" style="left:${offset260(p)}"></div>`;
+  }
+  let rows="";
+  CATS.forEach((cat, ci) => {
+    rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${cat.key}. ${esc(cat.title)}</div><div class="g-cat-track"></div></div>`;
+    cat.tasks.forEach((t, ii) => {
+      const id=`t-${ci}-${ii}`, s=dIso(t.start), e=dIso(t.end);
+      const L=pct(s), W=Math.max(pct(e)-L,1.0), days=Math.max(1,Math.round((e-s)/DAY)), done=!!state[id];
+      rows+=`<div class="g-row ${done?"done":""}" data-id="${id}" title="${esc(t.name)}  ·  ${fmtIso(t.start,t.end)} (약 ${days}일)  ·  ${t.juk.map((k)=>TAGS[k].l).join("·")}">
+        <div class="g-label"><span class="gl-id">${cat.key}${ii+1}</span><span class="gl-task">${esc(t.name)}</span></div>
+        <div class="g-track"><div class="g-bar ${cat.cls}" style="left:${L}%;width:${W}%"></div></div></div>`;
+    });
+  });
+  const evP = pct(new Date(2026,7,5));
+  const now = new Date(), today = new Date(now.getFullYear(),now.getMonth(),now.getDate()), tp = pct(today);
+  const todayLine = (tp>=0&&tp<=100) ? `<div class="g-event" style="left:${offset260(tp)};background:var(--accent)"><span class="lbl" style="color:var(--accent)">오늘</span></div>` : "";
+  document.getElementById("pm-gantt-body").innerHTML =
+    `<div class="g-axis-row"><div class="g-corner">구분 · 관리 업무</div><div class="g-axis">${ticks}</div></div>`
+    + grids + rows + `<div class="g-event" style="left:${offset260(evP)};background:var(--danger)"><span class="lbl" style="color:var(--danger)">워크숍 8/5</span></div>` + todayLine;
+}
+
+/* ===================== PROGRESS + SYNC ===================== */
+function updateProgress() {
+  let cl=0,clT=0; CHECKLIST.forEach((c,ci)=>{ let d=0; c.items.forEach((_,ii)=>{clT++; if(state[`c-${ci}-${ii}`]){cl++;d++;}}); const m=document.querySelector(`[data-cmini="${ci}"]`); if(m) m.textContent=`${d}/${c.items.length}`; });
+  let sp=0,spT=0; SUPPLIES.forEach((g,gi)=>g.rows.forEach((_,ri)=>{spT++; if(state[`s-${gi}-${ri}`]) sp++;}));
+  let pm=0,pmT=0; CATS.forEach((c,ci)=>{ let d=0; c.tasks.forEach((_,ii)=>{pmT++; if(state[`t-${ci}-${ii}`]){pm++;d++;}}); const m=document.querySelector(`[data-tmini="${ci}"]`); if(m) m.textContent=`${d}/${c.tasks.length}`; });
+  const set=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=v;};
+  const setW=(id,v)=>{const el=document.getElementById(id); if(el) el.style.width=v;};
+  set("cl-done",cl); set("cl-total",clT); setW("cl-bar", clT?(cl/clT*100)+"%":"0");
+  set("sp-done",sp); set("sp-total",spT); setW("sp-bar", spT?(sp/spT*100)+"%":"0");
+  set("pm-li-done",pm); set("pm-li-total",pmT); setW("pm-li-bar", pmT?(pm/pmT*100)+"%":"0");
+  set("cnt-checklist",`${cl}/${clT}`); set("cnt-supplies",`${sp}/${spT}`); set("cnt-timeline",TIMELINE.length); set("cnt-ws-gantt",`${cl}/${clT}`);
+  set("cnt-pm-list",`${pm}/${pmT}`); set("cnt-pm-gantt",`${pm}/${pmT}`);
+}
+function toggle(id) { state[id]=!state[id]; if(!state[id]) delete state[id]; save(); }
+function syncAll() {
+  document.querySelectorAll("[data-id]").forEach((el) => {
+    const on=!!state[el.dataset.id]; el.classList.toggle("done", on);
+    const sc=el.querySelector(".s-chk"); if(sc) sc.lastChild.textContent = on?"완료":"대기";
+    const chk=el.querySelector('[role="checkbox"]'); if(chk) chk.setAttribute("aria-checked", on);
+  });
+  updateProgress();
+}
+
+/* ===================== NAV + WIRE ===================== */
+function setSection(key) {
+  const s = SECTIONS[key];
+  document.getElementById("h-title").textContent = s.title;
+  document.getElementById("h-sub").textContent = s.sub;
+  document.getElementById("h-chips").innerHTML = s.chips.map((c)=>`<span class="meta-chip">${c}</span>`).join("");
+  document.querySelectorAll(".prim-btn").forEach((b)=>b.classList.toggle("active", b.dataset.prim===key));
+  document.querySelectorAll(".tabs[data-group]").forEach((g)=>{ g.hidden = (g.dataset.group!==key); });
+  document.querySelectorAll(".tab").forEach((t)=>t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach((p)=>p.classList.remove("active"));
+  const firstTab = document.querySelector(`.tabs[data-group="${key}"] .tab`);
+  firstTab.classList.add("active");
+  document.getElementById(firstTab.dataset.tab).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function wire() {
+  document.getElementById("checklist-body").addEventListener("click", (e)=>{ const h=e.target.closest(".cat-head"); if(h){h.parentElement.classList.toggle("collapsed");return;} const it=e.target.closest(".item"); if(it){toggle(it.dataset.id); syncAll();} });
+  document.getElementById("pm-list-body").addEventListener("click", (e)=>{ const h=e.target.closest(".cat-head"); if(h){h.parentElement.classList.toggle("collapsed");return;} const it=e.target.closest(".item"); if(it){toggle(it.dataset.id); syncAll();} });
+  document.getElementById("supplies-body").addEventListener("click", (e)=>{ const tr=e.target.closest("tr"); if(tr&&tr.dataset.id){toggle(tr.dataset.id); syncAll();} });
+  document.getElementById("ws-gantt-body").addEventListener("click", (e)=>{ const r=e.target.closest(".g-row"); if(r&&r.dataset.id){toggle(r.dataset.id); syncAll();} });
+  document.getElementById("pm-gantt-body").addEventListener("click", (e)=>{ const r=e.target.closest(".g-row"); if(r&&r.dataset.id){toggle(r.dataset.id); syncAll();} });
+  document.body.addEventListener("keydown", (e)=>{ if((e.key==="Enter"||e.key===" ")&&e.target.getAttribute("role")==="checkbox"){ e.preventDefault(); const row=e.target.closest("[data-id]"); if(row){toggle(row.dataset.id); syncAll();} } });
+  document.querySelectorAll(".prim-btn").forEach((b)=>b.addEventListener("click", ()=>setSection(b.dataset.prim)));
+  document.querySelectorAll(".tab").forEach((btn)=>btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach((t)=>t.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach((p)=>p.classList.remove("active"));
+    btn.classList.add("active"); document.getElementById(btn.dataset.tab).classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }));
+  document.querySelectorAll("[data-reset]").forEach((btn)=>btn.addEventListener("click", ()=>{
+    const pre=btn.dataset.reset+"-";
+    if(!confirm("이 탭의 체크 표시를 모두 초기화할까요? (내 브라우저에서만)")) return;
+    Object.keys(state).forEach((k)=>{ if(k.startsWith(pre)) delete state[k]; }); save(); syncAll();
+  }));
+}
+function setDday() {
+  try { const ev=new Date(2026,7,5), now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const diff=Math.round((ev-t0)/86400000); document.getElementById("ddayNum").textContent = diff>0?`D-${diff}`:diff===0?"D-DAY":`D+${-diff}`;
+  } catch (e) {}
+}
+
+/* ===================== INIT ===================== */
+renderChecklist(); renderSupplies(); renderTimeline(); renderWsGantt(); renderPmList(); renderPmGantt();
+updateProgress(); wire(); setDday(); setSection("chong");
+</script>
+</body>
+</html>
