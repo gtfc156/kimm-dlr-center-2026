@@ -4,19 +4,17 @@
 과제별 엑셀(data/*.xlsx) → index.html 동기화 도구.
 
 사용법:
-  python sync_excel.py --init   # data/ 엑셀 4개를 현재 데이터로 생성 (최초 1회)
+  python sync_excel.py --init   # data/ 엑셀 5개를 현재 데이터로 생성 (최초 1회)
   python sync_excel.py          # data/ 엑셀을 읽어 index.html을 갱신
 
-엑셀에 업무를 쓰고 `python sync_excel.py`를 실행하면, index.html의
-  /* GEN:CATS:START */ ... /* GEN:CATS:END */          (총괄)
-  /* GEN:SUBPROJECTS:START */ ... /* GEN:SUBPROJECTS:END */ (세부1·2·3)
-영역이 다시 만들어집니다. 이후 git push(gtfc156)하면 GitHub Pages가 갱신됩니다.
-
-엑셀 표 열: 구분키 | 구분명 | 업무명 | 시작일 | 종료일 | 비고 | 출처 | 주관
-  - 같은 '구분키'끼리 한 카테고리로 묶이며, 막대 색은 키 등장 순서대로 자동(파랑·보라·초록·주황).
-  - 출처: '계획서' 또는 '행정' (비우면 배지 없음).
-  - 주관: 총괄/운영위/DLR/전담 중 쉼표로 구분 (세부과제는 보통 비움).
-과제 제목·아이콘 등 표시 메타데이터는 아래 PROJECTS 설정에서 바꿉니다.
+과제 엑셀(총괄·세부1·2·3) 시트:
+  - 업무리스트: 구분키 | 구분명 | 업무명 | 계획시작 | 계획종료 | 실적시작 | 실적종료 | 비고 | 출처 | 주관
+      · 계획/실적 날짜로 간트에 바 2개(계획 위·실적 아래)가 그려진다. 실적은 비워도 됨.
+  - 성능목표실적: 평가항목 | 단위 | 목표 | 실적 | 달성도 | 비고
+  - 정량성과:     성과구분 | 단위 | 목표 | 실적 | 비고
+  - 간트차트: 자동 생성(편집 금지)
+index.html의 GEN:CATS / GEN:SUBPROJECTS / GEN:PERF_CHONG / GEN:QUANT_CHONG /
+GEN:CHECKLIST / GEN:SUPPLIES / GEN:TIMELINE 영역이 재생성된다.
 """
 import os, re, sys, json, datetime, calendar
 from openpyxl import Workbook, load_workbook
@@ -28,9 +26,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 INDEX = os.path.join(BASE, "index.html")
 DATA = os.path.join(BASE, "data")
 
-HEADERS = ["구분키", "구분명", "업무명", "시작일", "종료일", "비고", "출처", "주관"]
 LIST_SHEET = "업무리스트"
+PERF_SHEET = "성능목표실적"
+QUANT_SHEET = "정량성과"
 GANTT_SHEET = "간트차트"
+LIST_HEADERS = ["구분키", "구분명", "업무명", "계획시작", "계획종료", "실적시작", "실적종료", "비고", "출처", "주관"]
+PERF_HEADERS = ["평가항목", "단위", "목표", "실적", "달성도", "비고"]
+QUANT_HEADERS = ["성과구분", "단위", "목표", "실적", "비고"]
 CLS = ["a", "b", "c", "d"]
 CLS_HEX = {"a": "2563EB", "b": "7A4FD0", "c": "15A06A", "d": "D9822B"}
 GANTT_START = (2026, 1)
@@ -62,7 +64,7 @@ PROJECTS = [
 SEED = {
     "chong": [
         {"key": "A", "title": "사업 운영·관리", "tasks": [
-            {"name": "2차년도 협약 체결·연구비 카드 등록·집행계획 수립", "juk": ["chong"], "start": "2026-01-02", "end": "2026-03-12", "note": "협약 3/12 기준", "src": "std"},
+            {"name": "2차년도 협약 체결·연구비 카드 등록·집행계획 수립", "juk": ["chong"], "start": "2026-01-02", "end": "2026-03-12", "astart": "2026-01-05", "aend": "2026-03-20", "note": "협약 3/12 기준 (실적 예시)", "src": "std"},
             {"name": "참여연구원 등록·변경 및 인건비 계상 관리", "juk": ["chong"], "start": "2026-01-05", "end": "2026-12-31", "note": "연중 상시", "src": "std"},
             {"name": "운영위원회 개최 (연 1회 이상)", "juk": ["op"], "start": "2026-09-01", "end": "2026-09-30", "note": "KETEP 간사·국내전문가(가스터빈·수전해) 포함", "src": "doc"},
             {"name": "세부과제(1~5) 진척도 정기 점검 회의", "juk": ["chong"], "start": "2026-03-01", "end": "2026-12-31", "note": "분기별 (3·6·9·12월)", "src": "doc"},
@@ -95,10 +97,21 @@ SEED = {
 for n in (1, 2, 3):
     SEED[f"sub{n}"] = [
         {"key": "1", "title": "(예시) 업무 구분 1", "tasks": [
-            {"name": f"(예시) 세부{n} 핵심 연구·실험 항목", "juk": [], "start": "2026-01-05", "end": "2026-06-30", "note": "예시 — 실제 업무로 교체", "src": "doc"},
+            {"name": f"(예시) 세부{n} 핵심 연구·실험 항목", "juk": [], "start": "2026-01-05", "end": "2026-06-30", "astart": "2026-01-12", "aend": "2026-05-20", "note": "예시 — 실제 업무로 교체 (실적바 예시)", "src": "doc"},
             {"name": f"(예시) 세부{n} 중간 점검·보고", "juk": [], "start": "2026-07-01", "end": "2026-09-30", "note": "예시", "src": "std"},
         ]},
     ]
+
+# 성능 목표·실적 / 정량 성과 시드 (예시) — 과제별 동일 예시, 실제 내용으로 교체
+SEED_PERF = {pid: [
+    {"item": "(예시) 평가항목 1", "unit": "—", "target": "(목표값)", "actual": "(실적값)", "rate": "", "note": "예시 — 실제 내용으로 교체"},
+    {"item": "(예시) 평가항목 2", "unit": "%", "target": "90", "actual": "", "rate": "", "note": "예시"},
+] for pid in ("chong", "sub1", "sub2", "sub3")}
+SEED_QUANT = {pid: [
+    {"name": "SCI(E) 논문", "unit": "편", "target": "1", "actual": "0", "note": "예시"},
+    {"name": "특허 출원(국내·국제)", "unit": "건", "target": "1", "actual": "0", "note": "예시"},
+    {"name": "학술회의 발표", "unit": "건", "target": "2", "actual": "0", "note": "예시"},
+] for pid in ("chong", "sub1", "sub2", "sub3")}
 
 
 # ───────────────────────── helpers ─────────────────────────
@@ -116,11 +129,18 @@ def fmt_date(v):
     return s
 
 
+def is_date(v):
+    if isinstance(v, (datetime.datetime, datetime.date)):
+        return True
+    if v is None:
+        return False
+    return bool(re.match(r"^\d{4}[-./]\d{1,2}[-./]\d{1,2}", str(v).strip()))
+
+
 def norm_src(v):
     if v is None:
         return None
-    s = str(v).strip()
-    return KO_TO_SRC.get(s)
+    return KO_TO_SRC.get(str(v).strip())
 
 
 def norm_juk(v):
@@ -134,26 +154,33 @@ def norm_juk(v):
     return out
 
 
-# ───────────────────────── read xlsx → cats ─────────────────────────
+def _s(v):
+    return "" if v is None else str(v).strip()
+
+
+# ───────────────────────── read xlsx ─────────────────────────
 def read_ws(ws):
     cats, by_key = [], {}
     for row in ws.iter_rows(min_row=2, values_only=True):
         if row is None:
             continue
-        vals = (list(row) + [None] * 8)[:8]
-        key, name, task, start, end, note, src, juk = vals
-        key = "" if key is None else str(key).strip()
-        task = "" if task is None else str(task).strip()
+        vals = (list(row) + [None] * 10)[:10]
+        key, name, task, pstart, pend, astart, aend, note, src, juk = vals
+        key = _s(key)
+        task = _s(task)
         if not task:
             continue
         if key not in by_key:
             cat = {"key": key or str(len(cats) + 1), "cls": CLS[len(cats) % 4],
-                   "title": (str(name).strip() if name else key), "tasks": []}
+                   "title": (_s(name) or key), "tasks": []}
             by_key[key] = cat
             cats.append(cat)
-        t = {"name": task, "start": fmt_date(start), "end": fmt_date(end)}
-        if note and str(note).strip():
-            t["note"] = str(note).strip()
+        t = {"name": task, "start": fmt_date(pstart), "end": fmt_date(pend)}
+        if is_date(astart) and is_date(aend):
+            t["astart"] = fmt_date(astart)
+            t["aend"] = fmt_date(aend)
+        if _s(note):
+            t["note"] = _s(note)
         s = norm_src(src)
         if s:
             t["src"] = s
@@ -164,12 +191,36 @@ def read_ws(ws):
     return cats
 
 
-# ───────────────────────── cats → JS ─────────────────────────
+def read_perf(ws):
+    out = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        item, unit, target, actual, rate, note = (list(row) + [None] * 6)[:6]
+        if not _s(item):
+            continue
+        out.append({"item": _s(item), "unit": _s(unit), "target": _s(target),
+                    "actual": _s(actual), "rate": _s(rate), "note": _s(note)})
+    return out
+
+
+def read_quant(ws):
+    out = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        name, unit, target, actual, note = (list(row) + [None] * 5)[:5]
+        if not _s(name):
+            continue
+        out.append({"name": _s(name), "unit": _s(unit), "target": _s(target),
+                    "actual": _s(actual), "note": _s(note)})
+    return out
+
+
+# ───────────────────────── data → JS ─────────────────────────
 def emit_task(t, with_juk):
     parts = [f"name:{js(t['name'])}"]
     if with_juk and t.get("juk"):
         parts.append("juk:[" + ",".join(js(x) for x in t["juk"]) + "]")
     parts += [f"start:{js(t['start'])}", f"end:{js(t['end'])}"]
+    if t.get("astart") and t.get("aend"):
+        parts += [f"astart:{js(t['astart'])}", f"aend:{js(t['aend'])}"]
     if t.get("note"):
         parts.append(f"note:{js(t['note'])}")
     if t.get("src"):
@@ -186,20 +237,44 @@ def emit_cats(cats, with_juk, pad):
     return "[\n" + ",\n".join(blocks) + " ]"
 
 
+def emit_perf(perf):
+    rows = ["    { item:%s, unit:%s, target:%s, actual:%s, rate:%s, note:%s }" %
+            (js(p["item"]), js(p["unit"]), js(p["target"]), js(p["actual"]), js(p["rate"]), js(p["note"]))
+            for p in perf]
+    return "[\n" + ",\n".join(rows) + " ]" if rows else "[]"
+
+
+def emit_quant(quant):
+    rows = ["    { name:%s, unit:%s, target:%s, actual:%s, note:%s }" %
+            (js(q["name"]), js(q["unit"]), js(q["target"]), js(q["actual"]), js(q["note"]))
+            for q in quant]
+    return "[\n" + ",\n".join(rows) + " ]" if rows else "[]"
+
+
 def build_cats_js(cats):
     return "const CATS = " + emit_cats(cats, True, "  ") + ";"
 
 
+def build_perf_chong_js(perf):
+    return "const PERF_CHONG = " + emit_perf(perf) + ";"
+
+
+def build_quant_chong_js(quant):
+    return "const QUANT_CHONG = " + emit_quant(quant) + ";"
+
+
 def build_subprojects_js(sub_defs):
     objs = []
-    for p, cats in sub_defs:
+    for p, cats, perf, quant in sub_defs:
         chips = "[" + ",".join(js(c) for c in p["chips"]) + "]"
         objs.append(
             f"  {{ id:{js(p['id'])}, prefix:{js(p['prefix'])}, nav:{js(p['nav'])},\n"
             f"    title:{js(p['title'])},\n"
             f"    sub:{js(p['sub'])},\n"
             f"    chips:{chips},\n"
-            f"    cats:{emit_cats(cats, False, '    ')} }}")
+            f"    cats:{emit_cats(cats, False, '    ')},\n"
+            f"    perf:{emit_perf(perf)},\n"
+            f"    quant:{emit_quant(quant)} }}")
     return "const SUBPROJECTS = [\n" + ",\n".join(objs) + "\n];"
 
 
@@ -227,6 +302,7 @@ def _date(s):
 
 
 def write_gantt_sheet(wb, cats):
+    """간트 미리보기(계획 기준). 실적은 HTML 대시보드에서 계획·실적 2바로 표시."""
     if GANTT_SHEET in wb.sheetnames:
         del wb[GANTT_SHEET]
     ws = wb.create_sheet(GANTT_SHEET)
@@ -238,10 +314,10 @@ def write_gantt_sheet(wb, cats):
     thin = Side(style="thin", color="E6EAF0")
     border = Border(left=thin, right=thin, top=thin, bottom=thin)
     center = Alignment(horizontal="center", vertical="center")
-    ws.cell(1, 1, "⚠ 자동 생성 탭 — 직접 편집하지 마세요. 일정은 '업무리스트' 탭에서 수정 후 python sync_excel.py 실행.")
+    ws.cell(1, 1, "⚠ 자동 생성 탭(계획 기준 미리보기) — 직접 편집 금지. 일정은 '업무리스트'에서 수정 후 python sync_excel.py.")
     ws.cell(1, 1).font = Font(name="Arial", size=9, italic=True, color="B00000")
     ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ncols)
-    hdr = ["구분", "업무명", "기간"] + [(f"'{str(y)[2:]} {m}월" if m == 1 else f"{m}월") for (y, m) in months]
+    hdr = ["구분", "업무명", "계획기간"] + [(f"'{str(y)[2:]} {m}월" if m == 1 else f"{m}월") for (y, m) in months]
     for c, h in enumerate(hdr, 1):
         cell = ws.cell(2, c, h)
         cell.fill, cell.font, cell.alignment, cell.border = navy, head_font, center, border
@@ -276,57 +352,87 @@ def write_gantt_sheet(wb, cats):
     return ws
 
 
-# ───────────────────────── write xlsx (--init) ─────────────────────────
-def write_xlsx(path, cats, with_juk):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = LIST_SHEET
+# ───────────────────────── write project xlsx (--init) ─────────────────────────
+def _hdr_row(ws, headers, comments=None):
     navy = PatternFill("solid", fgColor="16335E")
-    head_font = Font(name="Arial", bold=True, color="FFFFFF", size=10)
-    body_font = Font(name="Arial", size=10)
+    hf = Font(name="Arial", bold=True, color="FFFFFF", size=10)
+    ce = Alignment(horizontal="center", vertical="center")
     thin = Side(style="thin", color="D0D7E2")
-    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    bd = Border(left=thin, right=thin, top=thin, bottom=thin)
+    for c, h in enumerate(headers, 1):
+        cell = ws.cell(1, c, h)
+        cell.fill, cell.font, cell.alignment, cell.border = navy, hf, ce, bd
+    for col, txt in (comments or {}).items():
+        ws.cell(1, col).comment = Comment(txt, "sync_excel")
+    ws.freeze_panes = "A2"
+    return bd
+
+
+def write_xlsx(path, cats, with_juk, perf, quant):
+    wb = Workbook()
+    body = Font(name="Arial", size=10)
     wrap = Alignment(vertical="center", wrap_text=True)
     center = Alignment(horizontal="center", vertical="center")
-    for c, h in enumerate(HEADERS, 1):
-        cell = ws.cell(1, c, h)
-        cell.fill = navy
-        cell.font = head_font
-        cell.alignment = center
-        cell.border = border
-    comments = {
+    left = Alignment(vertical="center")
+
+    # 업무리스트 (계획·실적 날짜)
+    ws = wb.active
+    ws.title = LIST_SHEET
+    bd = _hdr_row(ws, LIST_HEADERS, {
         1: "같은 키끼리 한 카테고리로 묶임. 막대 색은 키 등장 순서대로 자동(파랑·보라·초록·주황).",
-        7: "계획서 또는 행정 (비우면 배지 없음).",
-        8: "총괄/운영위/DLR/전담 중 쉼표로 구분. 세부과제는 보통 비움.",
-    }
-    for col, txt in comments.items():
-        ws.cell(1, col).comment = Comment(txt, "sync_excel")
+        4: "계획 시작/종료 — 간트 위쪽(계획) 바.",
+        6: "실적 시작/종료 — 간트 아래쪽(실적) 바. 비우면 실적 바 없음.",
+        9: "계획서 또는 행정 (비우면 배지 없음).",
+        10: "총괄/운영위/DLR/전담 중 쉼표로 구분. 세부과제는 보통 비움.",
+    })
     r = 2
     for cat in cats:
         for t in cat["tasks"]:
-            ws.cell(r, 1, cat["key"])
-            ws.cell(r, 2, cat["title"])
-            ws.cell(r, 3, t["name"])
-            for col, kk in ((4, "start"), (5, "end")):
-                y, m, d = (int(x) for x in t[kk].split("-"))
-                dc = ws.cell(r, col, datetime.date(y, m, d))
-                dc.number_format = "yyyy-mm-dd"
-            ws.cell(r, 6, t.get("note", ""))
-            ws.cell(r, 7, SRC_TO_KO.get(t.get("src"), ""))
-            ws.cell(r, 8, ", ".join(JUK_TO_KO[j] for j in t.get("juk", [])) if with_juk else "")
-            for col in range(1, 9):
-                cc = ws.cell(r, col)
-                cc.font = body_font
-                cc.border = border
-                cc.alignment = wrap if col in (3, 6) else center if col in (1, 4, 5, 7) else Alignment(vertical="center")
+            ws.cell(r, 1, cat["key"]); ws.cell(r, 2, cat["title"]); ws.cell(r, 3, t["name"])
+            for col, kk in ((4, "start"), (5, "end"), (6, "astart"), (7, "aend")):
+                if t.get(kk):
+                    y, m, d = (int(x) for x in t[kk].split("-"))
+                    dc = ws.cell(r, col, datetime.date(y, m, d)); dc.number_format = "yyyy-mm-dd"
+            ws.cell(r, 8, t.get("note", ""))
+            ws.cell(r, 9, SRC_TO_KO.get(t.get("src"), ""))
+            ws.cell(r, 10, ", ".join(JUK_TO_KO[j] for j in t.get("juk", [])) if with_juk else "")
+            for col in range(1, 11):
+                cc = ws.cell(r, col); cc.font = body; cc.border = bd
+                cc.alignment = wrap if col in (3, 8) else center if col in (1, 4, 5, 6, 7, 9) else left
             r += 1
-    widths = [8, 20, 52, 13, 13, 30, 10, 16]
-    for i, w in enumerate(widths, 1):
-        ws.column_dimensions[chr(64 + i)].width = w
-    ws.freeze_panes = "A2"
+    for i, w in enumerate([8, 18, 46, 12, 12, 12, 12, 24, 9, 14], 1):
+        ws.column_dimensions[ws.cell(1, i).column_letter].width = w
     dv = DataValidation(type="list", formula1='"계획서,행정"', allow_blank=True)
-    ws.add_data_validation(dv)
-    dv.add(f"G2:G{max(r, 200)}")
+    ws.add_data_validation(dv); dv.add(f"I2:I{max(r, 200)}")
+
+    # 성능목표실적
+    ws2 = wb.create_sheet(PERF_SHEET)
+    bd2 = _hdr_row(ws2, PERF_HEADERS, {5: "예: 85% (수동 입력)."})
+    r = 2
+    for p in perf:
+        for col, k in ((1, "item"), (2, "unit"), (3, "target"), (4, "actual"), (5, "rate"), (6, "note")):
+            ws2.cell(r, col, p.get(k, ""))
+        for col in range(1, 7):
+            cc = ws2.cell(r, col); cc.font = body; cc.border = bd2
+            cc.alignment = wrap if col in (1, 6) else center
+        r += 1
+    for i, w in enumerate([40, 8, 14, 14, 10, 24], 1):
+        ws2.column_dimensions[ws2.cell(1, i).column_letter].width = w
+
+    # 정량성과
+    ws3 = wb.create_sheet(QUANT_SHEET)
+    bd3 = _hdr_row(ws3, QUANT_HEADERS)
+    r = 2
+    for q in quant:
+        for col, k in ((1, "name"), (2, "unit"), (3, "target"), (4, "actual"), (5, "note")):
+            ws3.cell(r, col, q.get(k, ""))
+        for col in range(1, 6):
+            cc = ws3.cell(r, col); cc.font = body; cc.border = bd3
+            cc.alignment = wrap if col in (1, 5) else center
+        r += 1
+    for i, w in enumerate([30, 8, 12, 12, 28], 1):
+        ws3.column_dimensions[ws3.cell(1, i).column_letter].width = w
+
     write_gantt_sheet(wb, cats)
     wb.active = wb[LIST_SHEET]
     wb.save(path)
@@ -591,39 +697,49 @@ console.log(JSON.stringify(out));
 def do_init():
     os.makedirs(DATA, exist_ok=True)
     for p in PROJECTS:
-        cats = SEED[p["id"]]
-        # SEED uses list-of-cat dicts with tasks already; reuse directly
-        write_xlsx(os.path.join(DATA, p["file"]), cats, p.get("with_juk", False))
-        print(f"  생성: data/{p['file']}  (카테고리 {len(cats)}개)")
+        pid = p["id"]
+        write_xlsx(os.path.join(DATA, p["file"]), SEED[pid], p.get("with_juk", False),
+                   SEED_PERF[pid], SEED_QUANT[pid])
+        print(f"  생성: data/{p['file']}  (업무리스트·성능목표실적·정량성과 + 간트)")
     d = extract_html_arrays(["CHECKLIST", "SUPPLIES", "TIMELINE"])
     write_workshop_xlsx(os.path.join(DATA, WS_FILE), d["CHECKLIST"], d["SUPPLIES"], d["TIMELINE"])
     print(f"  생성: data/{WS_FILE}  (준비업무·물품준비·당일타임라인 + 간트)")
     print("초기 엑셀 생성 완료. 이제 내용을 편집한 뒤 `python sync_excel.py`로 반영하세요.")
 
 
+def _read_project(path):
+    wb = load_workbook(path)
+    ws = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
+    cats = read_ws(ws)
+    perf = read_perf(wb[PERF_SHEET]) if PERF_SHEET in wb.sheetnames else []
+    quant = read_quant(wb[QUANT_SHEET]) if QUANT_SHEET in wb.sheetnames else []
+    write_gantt_sheet(wb, cats)
+    wb.active = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
+    wb.save(path)
+    return cats, perf, quant
+
+
 def do_sync():
     if not os.path.exists(INDEX):
         sys.exit("[오류] index.html 없음")
     html = open(INDEX, encoding="utf-8").read()
-    cats_chong, sub_defs, total = None, [], 0
+    cats_chong = perf_chong = quant_chong = None
+    sub_defs, total = [], 0
     for p in PROJECTS:
         path = os.path.join(DATA, p["file"])
         if not os.path.exists(path):
             sys.exit(f"[오류] {path} 없음. 먼저 `python sync_excel.py --init` 실행.")
-        wb = load_workbook(path)
-        ws = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
-        cats = read_ws(ws)
-        write_gantt_sheet(wb, cats)          # 간트 미리보기 탭 자동 갱신
-        wb.active = wb[LIST_SHEET] if LIST_SHEET in wb.sheetnames else wb.active
-        wb.save(path)
+        cats, perf, quant = _read_project(path)
         n = sum(len(c["tasks"]) for c in cats)
         total += n
-        print(f"  읽음: data/{p['file']}  카테고리 {len(cats)}개 · 업무 {n}건")
+        print(f"  읽음: data/{p['file']}  업무 {n}건 · 성능 {len(perf)} · 정량 {len(quant)}")
         if p["target"] == "CATS":
-            cats_chong = cats
+            cats_chong, perf_chong, quant_chong = cats, perf, quant
         else:
-            sub_defs.append((p, cats))
+            sub_defs.append((p, cats, perf, quant))
     html = inject(html, "CATS", build_cats_js(cats_chong))
+    html = inject(html, "PERF_CHONG", build_perf_chong_js(perf_chong))
+    html = inject(html, "QUANT_CHONG", build_quant_chong_js(quant_chong))
     html = inject(html, "SUBPROJECTS", build_subprojects_js(sub_defs))
     ws_path = os.path.join(DATA, WS_FILE)
     if os.path.exists(ws_path):
@@ -640,7 +756,7 @@ def do_sync():
         wn = sum(len(c["items"]) for c in checklist)
         print(f"  읽음: data/{WS_FILE}  준비업무 {wn}건 · 물품 {sum(len(g['rows']) for g in supplies)}건 · 타임라인 {len(timeline)}건")
     open(INDEX, "w", encoding="utf-8").write(html)
-    print(f"index.html 갱신 완료 (과제 업무 {total}건 + 워크숍). git push(gtfc156) 하면 사이트에 반영됩니다.")
+    print(f"index.html 갱신 완료 (과제 업무 {total}건 + 성능·정량 + 워크숍). git push(gtfc156) 하면 사이트에 반영됩니다.")
 
 
 if __name__ == "__main__":
