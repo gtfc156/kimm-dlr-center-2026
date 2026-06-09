@@ -220,7 +220,6 @@
   <div class="tabs" data-group="chong">
     <button class="tab active" data-tab="pm-list">📋 관리 업무 리스트 <span class="count" id="cnt-pm-list"></span></button>
     <button class="tab" data-tab="pm-gantt">📊 간트 차트 (2026) <span class="count" id="cnt-pm-gantt"></span></button>
-    <button class="tab" data-tab="pm-perf">🎯 성능 목표·실적 <span class="count" id="cnt-pm-perf"></span></button>
     <button class="tab" data-tab="pm-quant">📈 정량 성과 <span class="count" id="cnt-pm-quant"></span></button>
   </div>
   <div class="tabs" data-group="ws" hidden>
@@ -250,10 +249,6 @@
       <span class="li"><span class="dot" style="background:var(--cd)"></span> D 평가·보고</span>
       <span class="li" style="color:var(--muted)">윗바=계획(연함) · 아랫바=실적(진함) · 막대 클릭=완료 · 빨강=워크숍 8/5 · 파랑=오늘</span></div>
     <div class="gantt-scroll"><div class="gantt-inner" id="pm-gantt-body"></div></div>
-  </section>
-  <section class="panel" id="pm-perf">
-    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">🎯 성능 목표 및 실적</span><span class="li" style="color:var(--muted)">평가항목별 목표 대비 실적·달성도</span></div>
-    <div id="pm-perf-body"></div>
   </section>
   <section class="panel" id="pm-quant">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">📈 정량적 연구개발성과</span><span class="li" style="color:var(--muted)">논문·특허 등 성과지표 목표 대비 실적</span></div>
@@ -412,11 +407,7 @@ const CATS = [
 /* GEN:CATS:END */
 
 /* GEN:PERF_CHONG:START */
-const PERF_CHONG = [
-    { item:"운영위원회 개최", unit:"회", target:"2(국외1, 국내1)", actual:"", rate:"", note:"1차년도 실적 1회" },
-    { item:"국제워크숍 개최", unit:"회", target:"1", actual:"", rate:"", note:"1차년도 실적 1회" },
-    { item:"수요기업 사업화설명회", unit:"회", target:"1", actual:"", rate:"", note:"" },
-    { item:"세부과제 진도 점검", unit:"회", target:"4(분기별)", actual:"", rate:"", note:"관리 KPI(보고서 명시 수치 아님, 분기 점검 가정)" } ];
+const PERF_CHONG = [];
 /* GEN:PERF_CHONG:END */
 /* GEN:QUANT_CHONG:START */
 const QUANT_CHONG = [
@@ -818,7 +809,7 @@ function setDday() {
 
 /* ===================== INIT ===================== */
 renderChecklist(); renderSupplies(); renderTimeline(); renderWsGantt(); renderPmList(); renderPmGantt();
-renderPerf(PERF_CHONG, "pm-perf-body", "cnt-pm-perf"); renderQuant(QUANT_CHONG, "pm-quant-body", "cnt-pm-quant");
+renderQuant(QUANT_CHONG, "pm-quant-body", "cnt-pm-quant");
 buildSubprojects();
 updateProgress(); wire(); setDday(); setSection("chong");
 </script>
