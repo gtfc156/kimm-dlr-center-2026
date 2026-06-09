@@ -9,7 +9,7 @@
 
 ## 🔗 바로 보기
 
-**https://kangdo1.github.io/kimm-dlr-center-2026/**
+**https://gtfc156.github.io/kimm-dlr-center-2026/**
 
 링크만 있으면 누구나 브라우저에서 열람할 수 있습니다 (GitHub 계정 불필요).
 
