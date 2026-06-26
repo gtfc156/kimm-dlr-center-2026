@@ -523,6 +523,38 @@ const SUBPROJECTS = [
     { name:"공인인증/신뢰성검증(국내)", unit:"건", target:"10", actual:"7", note:"1차년도 누적 7건" },
     { name:"해외참여기관 인력교류(1개월 이상)", unit:"건", target:"1", actual:"", note:"" },
     { name:"현지 사업화 교류·홍보", unit:"건", target:"", actual:"", note:"2차년도 목표 미명시(3차년도 1건) / 확인 필요" } ],
+    miles:[] },
+  { id:"sub4", prefix:"u4", nav:"🔥 세부4과제",
+    title:"세부4과제 · 2026년(1차년도) 수행 업무",
+    sub:"수소–순산소 고효율 발전 시스템 원천기술 개발 — 신규(2026.07 착수) 1차년도 수행 업무·일정 · 4세부 연구개발계획서(2026.07~2029.06) 기반",
+    chips:["🧩 <b>세부4</b> 과제 · 신규","🤝 주관 <b>KIMM</b> · 공동 <b>KAIST·한울항공기계</b> · 해외 <b>DLR</b>","🗓️ 1차년도 <b>2026.7~2027.6</b>"],
+    cats:[
+    { key:"1", cls:"a", title:"발전 사이클·시스템 (KIMM)", tasks:[
+        { name:"수소-순산소 발전 사이클 선행 연구조사 및 기본 모델 개발", start:"2026-07-01", end:"2026-12-31", astart:"2026-07-01", aend:"2026-12-31", note:"증기 재순환형 고효율 발전 사이클" } ]},
+    { key:"2", cls:"b", title:"연소기 설계 (KIMM)", tasks:[
+        { name:"수소-순산소·증기 희석 연소기 개념 설계 및 시험 리그 고안", start:"2026-07-01", end:"2027-03-31", astart:"2026-07-01", aend:"2027-03-31", note:"증기 희석 기반 과열 방지" } ]},
+    { key:"3", cls:"c", title:"연소 해석 (KAIST)", tasks:[
+        { name:"수소-순산소 연소 해석 모델 구축 및 기초 수치해석 수행", start:"2026-08-01", end:"2027-03-31", astart:"2026-08-01", aend:"2027-03-31", note:"복합유체(아임계+초임계) 난류 반응유동" } ]},
+    { key:"4", cls:"d", title:"고압 시험·인증 (DLR·한울항공기계)", tasks:[
+        { name:"고압 연소기 부품 인증 시험 절차 검토", start:"2026-07-01", end:"2026-12-31", astart:"2026-07-01", aend:"2026-12-31", note:"100bar급 고압 인증 절차" },
+        { name:"수소-순산소 고압 연소 실험 설비 현황 점검 및 운용 계획 수립", start:"2026-09-01", end:"2027-02-28", astart:"2026-09-01", aend:"2027-02-28", note:"DLR 고온/고압 설비 활용" } ]} ],
+    perf:[
+    { item:"시스템 발전효율", unit:"%", target:"최종 >63.5", actual:"", rate:"", note:"세계최고 62.5%(日 AIST) / 단계 2차>62.5·3차>63·4차>63.5 / HBD 해석 / 기계연" },
+    { item:"연소 효율", unit:"%", target:"최종 ≥99.9", actual:"", rate:"", note:"2차 ≥99·3차 ≥99.9(상압,기계연)·4차 ≥99.9(고압,DLR)" },
+    { item:"연소기 운전범위(Turn-down)", unit:"%", target:"최종 ≤5", actual:"", rate:"", note:"2차 <10·3차 <5(상압)·4차 <5(고압) / 기계연·DLR" },
+    { item:"전체 단열화염온도(Global AFT)", unit:"℃", target:"최종 >1,450", actual:"", rate:"", note:"목표 TIT 1,400+50 / 2차 >1,250·3차 >1,350·4차 >1,450" },
+    { item:"노즐 고압 인증", unit:"bar", target:">150 (4차)", actual:"", rate:"", note:"운전압 100bar의 1.5배 가압 / ASME / 한울항공기계" },
+    { item:"연소 예측 정확도", unit:"%", target:"최종 90", actual:"", rate:"", note:"2차 80·3차 90(상압 OH*)·4차 90(고압 연소효율) / KAIST CFD" } ],
+    quant:[
+    { name:"SCI 게재논문(국내기관 단독)", unit:"건", target:"4", actual:"", note:"단계 2차1·3차1·4차2 / IF 평균 3 목표" },
+    { name:"해외기관 공저논문(SCI)", unit:"건", target:"1", actual:"", note:"4차년도 / DLR·KAIST 공저" },
+    { name:"특허 출원(국내)", unit:"건", target:"2", actual:"", note:"3·4차년도 / SMART 평균 4점" },
+    { name:"특허 등록(국내)", unit:"건", target:"1", actual:"", note:"4차년도" },
+    { name:"공인인증·신뢰성검증(국내)", unit:"건", target:"1", actual:"", note:"고압인증 공인성적서 / 한울항공기계" },
+    { name:"공인인증·신뢰성검증(국외)", unit:"건", target:"2", actual:"", note:"3·4차년도 / DLR" },
+    { name:"해외참여기관 인력교류(1개월 이상)", unit:"건", target:"1", actual:"", note:"4차년도 / DLR" },
+    { name:"세부과제 기술교류회", unit:"회", target:"4", actual:"", note:"매년 1회" },
+    { name:"시작품 출시", unit:"건", target:"2", actual:"", note:"3·4차년도 / 한울항공기계" } ],
     miles:[] }
 ];
 /* GEN:SUBPROJECTS:END */
