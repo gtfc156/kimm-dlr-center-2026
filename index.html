@@ -100,6 +100,10 @@
   .owner.DW { background: var(--dw-soft); color: var(--dw); } .owner.KU { background: var(--mk-soft); color: var(--mk); }
   .owner.DK { background: var(--dk-soft); color: var(--dk); } .owner.SH { background: var(--sh-soft); color: var(--sh); }
   .owner.JH { background: var(--kj-soft); color: var(--kj); } .owner.JY { background: var(--pj-soft); color: var(--pj); }
+  .cl-filter { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px; }
+  .cl-fbtn { border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:5px 12px; font-size:12.5px; font-weight:700; cursor:pointer; }
+  .cl-fbtn:hover { border-color:#c9d4e4; color:var(--ink); }
+  .cl-fbtn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
   .tag.t-chong { background: var(--t-chong-soft); color: var(--t-chong); } .tag.t-op { background: var(--t-op-soft); color: var(--t-op); }
   .tag.t-dlr { background: var(--t-dlr-soft); color: var(--t-dlr); } .tag.t-ketep { background: var(--t-ketep-soft); color: var(--t-ketep); }
   .src { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
@@ -236,6 +240,7 @@
     <button class="tab" data-tab="timeline">🗓️ 당일 타임라인 <span class="count" id="cnt-timeline"></span></button>
     <button class="tab" data-tab="ws-gantt">📊 간트 차트 <span class="count" id="cnt-ws-gantt"></span></button>
     <button class="tab" data-tab="tf">👥 준비 TF <span class="count" id="cnt-tf"></span></button>
+    <button class="tab" data-tab="att">👤 참석자 <span class="count" id="cnt-att"></span></button>
   </div>
 </div>
 
@@ -272,6 +277,13 @@
   <section class="panel" id="checklist">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
       <span class="li"><span class="owner DW">DW</span> 강도원</span><span class="li"><span class="owner KU">KU</span> 민경욱</span><span class="li"><span class="owner JH">JH</span> 김재현</span><span class="li"><span class="owner JY">JY</span> 박진영</span></div>
+    <div class="cl-filter" id="cl-filter">
+      <button class="cl-fbtn active" data-owner="">전체</button>
+      <button class="cl-fbtn" data-owner="DW">DW 강도원</button>
+      <button class="cl-fbtn" data-owner="KU">KU 민경욱</button>
+      <button class="cl-fbtn" data-owner="JH">JH 김재현</button>
+      <button class="cl-fbtn" data-owner="JY">JY 박진영</button>
+    </div>
     <div class="progress-card"><span class="ptext">완료 <b id="cl-done">0</b> / <span id="cl-total">0</span></span>
       <div class="bar"><span id="cl-bar"></span></div><button class="reset-btn" data-reset="c">초기화</button></div>
     <div id="checklist-body"></div>
@@ -298,6 +310,10 @@
   <section class="panel" id="tf">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">준비 TF · 업무분배(R&R)</span><span style="color:var(--muted)">분야별 책임제 · DW 강도원 · KU 민경욱 · JH 김재현 · JY 박진영</span></div>
     <div id="tf-body"></div>
+  </section>
+  <section class="panel" id="att">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">참석자 명단</span><span style="color:var(--muted)">DLR + KIMM</span></div>
+    <div id="att-body"></div>
   </section>
 </main>
 
@@ -437,6 +453,33 @@ const TF = { title:"KIMM–DLR 국제공동워크숍 준비 TF · 업무분배(R
       ["기념품·마무리", "강도원·민경욱", "폐회(16:00)·기념품 전달"] ]}
 ] };
 /* GEN:TF:END */
+
+/* GEN:ATTENDEES:START */
+const ATTENDEES = { total:19,
+  groups:[
+  { org:"DLR · 독일항공우주센터", count:5, rows:[
+      ["Dr. Andreas Huber", "Institute Director (연구소장)", "총괄", "총괄 책임자"],
+      ["Dr. Haisol Kim", "Research Associate (연구원)", "1세부", ""],
+      ["Dr. Klaus Peter Geigle", "Head of Department (부서장)", "2세부", ""],
+      ["Dr. Rémi Costa", "Group lead (그룹장)", "3세부", ""],
+      ["Dr. Michael Lang", "Senior Researcher (연구원)", "3세부 대행", ""] ]},
+  { org:"KIMM · 한국기계연구원", count:14, rows:[
+      ["송동근", "본부장", "총괄", "책임자"],
+      ["김민국", "실장", "2세부", "책임자"],
+      ["황정재", "책임", "1세부", "책임자"],
+      ["배용균", "선임", "3세부", "책임자"],
+      ["민경욱", "선임", "4세부", "책임자"],
+      ["강도원", "책임", "총괄", "실무자"],
+      ["김재현", "선임", "2세부", "실무자"],
+      ["박진영", "선임", "3세부", "실무자"],
+      ["이원준", "선임", "", "참여연구원"],
+      ["박순호", "선임", "", "참여연구원"],
+      ["변호성", "선임", "", "참여연구원"],
+      ["김영상", "책임", "", "참여연구원"],
+      ["이동근", "선임", "", "참여연구원"],
+      ["조주형", "책임", "", "참여연구원"] ]}
+] };
+/* GEN:ATTENDEES:END */
 
 const TAGS = { chong:{l:"총괄",c:"t-chong"}, op:{l:"운영위",c:"t-op"}, dlr:{l:"DLR",c:"t-dlr"}, ketep:{l:"전담",c:"t-ketep"} };
 /* GEN:CATS:START */
@@ -613,9 +656,13 @@ const offset260 = (p) => `calc(260px + (100% - 260px) * ${p/100})`;
 const fmtIso = (s,e) => { const f=(dt)=>`${dt.getMonth()+1}/${dt.getDate()}`; const yr=dIso(e).getFullYear()===2027?" ('27)":""; return `${f(dIso(s))}~${f(dIso(e))}${yr}`; };
 
 /* ===================== RENDER: workshop checklist ===================== */
+let clFilter = "";
 function renderChecklist() {
+  const f = clFilter, match = (o) => !f || o.split(",").map((x)=>x.trim()).includes(f);
   document.getElementById("checklist-body").innerHTML = CHECKLIST.map((cat, ci) => {
-    const items = cat.items.map((it, ii) => {
+    const rows = cat.items.map((it, ii) => ({it, ii})).filter(({it}) => match(it.owner));
+    if (f && !rows.length) return "";
+    const items = rows.map(({it, ii}) => {
       const id = `c-${ci}-${ii}`, done = !!state[id], aug = it.due.startsWith("8/");
       return `<div class="item ${done?"done":""}" data-id="${id}">
         <div class="chk" role="checkbox" aria-checked="${done}" tabindex="0">✓</div>
@@ -624,10 +671,11 @@ function renderChecklist() {
         <div class="it-meta"><div class="chips">${ownerChips(it.owner)}</div><span class="due ${aug?"aug":""}">${esc(it.due)}</span></div>
       </div>`;
     }).join("");
+    const cnt = f ? `<span class="mini">${rows.length}건</span>` : `<span class="mini" data-cmini="${ci}"></span>`;
     return `<div class="cat" data-cat="${ci}"><div class="cat-head">
         <span class="cat-num">${cat.num}</span>
         <div><div class="cat-title">${esc(cat.title)}</div>${cat.sub?`<div class="cat-sub">${esc(cat.sub)}</div>`:""}</div>
-        <div class="cat-prog"><span class="mini" data-cmini="${ci}"></span><span class="chev">▼</span></div>
+        <div class="cat-prog">${cnt}<span class="chev">▼</span></div>
       </div><div class="items">${items}</div></div>`;
   }).join("");
 }
@@ -666,6 +714,20 @@ function renderTF() {
     (TF.sub?`<div class="note-box">${esc(TF.sub)}</div>`:"") +
     TF.sections.map(sec).join("") +
     (TF.note?`<div class="note-box" style="margin-top:14px">${esc(TF.note)}</div>`:"");
+}
+
+/* ===================== RENDER: workshop attendees ===================== */
+function renderAttendees() {
+  const el = document.getElementById("att-body");
+  if (!el) return;
+  if (!ATTENDEES || !ATTENDEES.groups || !ATTENDEES.groups.length) { el.innerHTML = ""; return; }
+  const grp = (g) => `
+    <div style="font-weight:800;color:var(--navy);margin:18px 2px 8px;font-size:15px">${esc(g.org)} <span style="color:var(--muted);font-weight:600;font-size:13px">${g.count}명</span></div>
+    <div class="table-card"><div class="tbl-scroll"><table>
+      <thead><tr><th>이름</th><th>직급</th><th style="text-align:center">소속</th><th>역할</th></tr></thead>
+      <tbody>${g.rows.map((r)=>`<tr><td class="item-name">${esc(r[0])}</td><td>${esc(r[1])}</td><td style="text-align:center">${esc(r[2])}</td><td class="loc">${esc(r[3])}</td></tr>`).join("")}</tbody>
+    </table></div></div>`;
+  el.innerHTML = `<div class="note-box">👤 총 <b>${ATTENDEES.total}</b>명 · DLR + KIMM</div>` + ATTENDEES.groups.map(grp).join("");
 }
 
 /* ===================== RENDER: PM list ===================== */
@@ -903,6 +965,7 @@ function updateProgress() {
   set("pm-li-done",pm); set("pm-li-total",pmT); setW("pm-li-bar", pmT?(pm/pmT*100)+"%":"0");
   set("cnt-checklist",`${cl}/${clT}`); set("cnt-supplies",`${sp}/${spT}`); set("cnt-timeline",TIMELINE.length); set("cnt-ws-gantt",`${cl}/${clT}`);
   set("cnt-tf", (typeof TF!=="undefined"&&TF.sections)?TF.sections.reduce((a,s)=>a+s.rows.length,0):0);
+  set("cnt-att", (typeof ATTENDEES!=="undefined"&&ATTENDEES.total)?ATTENDEES.total:0);
   set("cnt-pm-list",`${pm}/${pmT}`); set("cnt-pm-gantt",`${pm}/${pmT}`);
   SUBPROJECTS.forEach((p)=>{ let d=0,tot=0;
     p.cats.forEach((c,ci)=>{ let cd=0; c.tasks.forEach((_,ii)=>{ tot++; if(state[`${p.prefix}-${ci}-${ii}`]){d++;cd++;} }); const m=document.querySelector(`[data-mini="${p.prefix}-${ci}"]`); if(m) m.textContent=`${cd}/${c.tasks.length}`; });
@@ -936,6 +999,7 @@ function setSection(key) {
 }
 function wire() {
   document.getElementById("checklist-body").addEventListener("click", (e)=>{ const h=e.target.closest(".cat-head"); if(h){h.parentElement.classList.toggle("collapsed");return;} const it=e.target.closest(".item"); if(it){toggle(it.dataset.id); syncAll();} });
+  document.querySelectorAll("#cl-filter .cl-fbtn").forEach((b)=>b.addEventListener("click", ()=>{ clFilter=b.dataset.owner; document.querySelectorAll("#cl-filter .cl-fbtn").forEach((x)=>x.classList.toggle("active", x===b)); renderChecklist(); syncAll(); }));
   document.getElementById("pm-list-body").addEventListener("click", (e)=>{ const h=e.target.closest(".cat-head"); if(h){h.parentElement.classList.toggle("collapsed");return;} const it=e.target.closest(".item"); if(it){toggle(it.dataset.id); syncAll();} });
   document.getElementById("supplies-body").addEventListener("click", (e)=>{ const tr=e.target.closest("tr"); if(tr&&tr.dataset.id){toggle(tr.dataset.id); syncAll();} });
   document.getElementById("ws-gantt-body").addEventListener("click", (e)=>{ const r=e.target.closest(".g-row"); if(r&&r.dataset.id){toggle(r.dataset.id); syncAll();} });
@@ -961,7 +1025,7 @@ function setDday() {
 }
 
 /* ===================== INIT ===================== */
-renderChecklist(); renderSupplies(); renderTimeline(); renderTF(); renderWsGantt(); renderPmList(); renderPmGantt();
+renderChecklist(); renderSupplies(); renderTimeline(); renderTF(); renderAttendees(); renderWsGantt(); renderPmList(); renderPmGantt();
 renderQuant(QUANT_CHONG, "pm-quant-body", "cnt-pm-quant");
 renderBudget(BUDGET, "pm-budget-body", "cnt-pm-budget");
 buildSubprojects();

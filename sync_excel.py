@@ -530,6 +530,8 @@ def write_xlsx(path, cats, with_juk, perf, quant, miles):
 WS_FILE = "워크숍.xlsx"
 WS_LIST, WS_SUP, WS_TL = "준비업무", "물품준비", "당일타임라인"
 WS_TF = "TF·R&R"
+WS_ATT = "참석자"
+ATT_ORG = {"DLR": "DLR · 독일항공우주센터", "KIMM": "KIMM · 한국기계연구원"}
 TL_CATS = ["티타임", "오프닝", "발표", "중식", "랩투어", "마무리"]
 OWNER_HEX = {"DW": "2563EB", "KU": "15A06A", "JH": "7A4FD0", "JY": "B3741A", "DK": "B3741A", "SH": "7A4FD0"}
 WS_G_START = datetime.date(2026, 6, 29)
@@ -693,6 +695,31 @@ def build_tf_js(tf):
         secs.append("  { title:%s, headers:%s, rows:[\n%s ]}" % (js(s["title"]), heads, rws))
     return ("const TF = { title:%s, sub:%s, note:%s,\n  sections:[\n%s\n] };"
             % (js(tf["title"]), js(tf["sub"]), js(tf["note"]), ",\n".join(secs)))
+
+
+# ── 참석자 (구분·이름·직급·소속·역할 → 구분별 그룹) ───────────────────────────────
+def read_attendees(ws):
+    groups, by = [], {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        org, name, rank, dept, role = [("" if c is None else str(c).strip()) for c in (list(row) + [None] * 5)[:5]]
+        if not name:
+            continue
+        key = org or "기타"
+        if key not in by:
+            g = {"org": ATT_ORG.get(key, key), "rows": []}
+            by[key] = g
+            groups.append(g)
+        by[key]["rows"].append([name, rank, dept, role])
+    return groups
+
+
+def build_attendees_js(groups):
+    total = sum(len(g["rows"]) for g in groups)
+    blocks = []
+    for g in groups:
+        rws = ",\n".join("      [" + ", ".join(js(c) for c in r) + "]" for r in g["rows"])
+        blocks.append("  { org:%s, count:%d, rows:[\n%s ]}" % (js(g["org"]), len(g["rows"]), rws))
+    return "const ATTENDEES = { total:%d,\n  groups:[\n%s\n] };" % (total, ",\n".join(blocks))
 
 
 def _ws_head(ws, headers, widths):
@@ -899,6 +926,8 @@ def do_sync():
         html = inject(html, "TIMELINE", build_timeline_js(timeline))
         tf = read_tf(wb[WS_TF]) if WS_TF in wb.sheetnames else {"title": "", "sub": "", "sections": [], "note": ""}
         html = inject(html, "TF", build_tf_js(tf))
+        att = read_attendees(wb[WS_ATT]) if WS_ATT in wb.sheetnames else []
+        html = inject(html, "ATTENDEES", build_attendees_js(att))
         wn = sum(len(c["items"]) for c in checklist)
         tn = sum(len(s["rows"]) for s in tf["sections"])
         print(f"  읽음: data/{WS_FILE}  준비업무 {wn}건 · 물품 {sum(len(g['rows']) for g in supplies)}건 · 타임라인 {len(timeline)}건 · TF {tn}건")
