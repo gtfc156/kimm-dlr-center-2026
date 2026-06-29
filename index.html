@@ -278,7 +278,7 @@
   </section>
   <section class="panel" id="supplies">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
-      <span class="li"><span class="owner DW">DW</span> 도원 (물품 준비 전담)</span><span class="li" style="color:var(--muted)">제작/구매 → 수령 → 결재 → 세팅</span></div>
+      <span class="li"><span class="owner PJ">PJ</span> 박진영 (물품 제작·수령)</span><span class="li"><span class="owner DW">DW</span> 강도원 (결재·비용)</span><span class="li" style="color:var(--muted)">제작/구매 → 수령 → 결재 → 세팅</span></div>
     <div class="progress-card"><span class="ptext">세팅 완료 <b id="sp-done">0</b> / <span id="sp-total">0</span></span>
       <div class="bar"><span id="sp-bar"></span></div><button class="reset-btn" data-reset="s">초기화</button></div>
     <div class="table-card"><div class="tbl-scroll"><table>
@@ -366,23 +366,23 @@ const CHECKLIST = [
 /* GEN:SUPPLIES:START */
 const SUPPLIES = [
   { grp:"행사용품", rows:[
-    { name:"플랜카드 (워크숍용, 벽걸이)", make:"DW", recv:"DW", appr:"DW", loc:"회의실 전면" },
-    { name:"플랜카드 (기술교류회 2종, 들고찍기)", make:"DW", recv:"DW", appr:"DW", loc:"회의실/랩투어" },
-    { name:"탁상용 입간판", make:"DW", recv:"DW", appr:"DW", loc:"회의실 입구" },
-    { name:"명찰 (여분 포함)", make:"DW", recv:"DW", appr:"DW", loc:"접수대" },
-    { name:"국기 + 받침대 (한국·독일)", make:"DW", recv:"DW", appr:"DW", loc:"회의실 단상" } ]},
+    { name:"플랜카드 (워크숍용, 벽걸이)", make:"PJ", recv:"PJ", appr:"DW", loc:"회의실 전면" },
+    { name:"플랜카드 (기술교류회 2종, 들고찍기)", make:"PJ", recv:"PJ", appr:"DW", loc:"회의실/랩투어" },
+    { name:"탁상용 입간판", make:"PJ", recv:"PJ", appr:"DW", loc:"회의실 입구" },
+    { name:"명찰 (여분 포함)", make:"PJ", recv:"PJ", appr:"DW", loc:"접수대" },
+    { name:"국기 + 받침대 (한국·독일)", make:"PJ", recv:"PJ", appr:"DW", loc:"회의실 단상" } ]},
   { grp:"회의물품", rows:[
-    { name:"필기구 세트 (펜 접시 포함)", make:"DW", recv:"DW", appr:"DW", loc:"좌석 비치" },
-    { name:"메모지", make:"DW", recv:"DW", appr:"DW", loc:"좌석 비치" },
-    { name:"좌석 명패 (영문)", make:"DW", recv:"DW", appr:"DW", loc:"좌석 비치" } ]},
+    { name:"필기구 세트 (펜 접시 포함)", make:"PJ", recv:"PJ", appr:"DW", loc:"좌석 비치" },
+    { name:"메모지", make:"PJ", recv:"PJ", appr:"DW", loc:"좌석 비치" },
+    { name:"좌석 명패 (영문)", make:"PJ", recv:"PJ", appr:"DW", loc:"좌석 비치" } ]},
   { grp:"다과·중식", rows:[
-    { name:"다과·음료", make:"DW", recv:"DW", appr:"DW", loc:"회의실" },
-    { name:"중식 (식당 예약/케이터링)", make:"DW", recv:"—", appr:"DW", loc:"식당" } ]},
+    { name:"다과·음료", make:"PJ", recv:"PJ", appr:"DW", loc:"회의실" },
+    { name:"중식 (식당 예약/케이터링)", make:"PJ", recv:"—", appr:"DW", loc:"식당" } ]},
   { grp:"기념품", rows:[
-    { name:"기계연 기념품", make:"DW", recv:"DW", appr:"DW", loc:"선물 전달" } ]},
+    { name:"기계연 기념품", make:"PJ", recv:"PJ", appr:"DW", loc:"선물 전달" } ]},
   { grp:"안내·의전", rows:[
-    { name:"원내 안내 표지판", make:"DW", recv:"DW", appr:"—", loc:"동선 곳곳" },
-    { name:"방문자 출입증·주차증", make:"DW", recv:"DW", appr:"—", loc:"정문/접수대" } ]}
+    { name:"원내 안내 표지판", make:"PJ", recv:"PJ", appr:"—", loc:"동선 곳곳" },
+    { name:"방문자 출입증·주차증", make:"PJ", recv:"PJ", appr:"—", loc:"정문/접수대" } ]}
 ];
 /* GEN:SUPPLIES:END */
 
@@ -408,7 +408,7 @@ const TIMELINE = [
 /* GEN:TIMELINE:END */
 
 /* GEN:TF:START */
-const TF = { title:"KIMM–DLR 국제공동워크숍 준비 TF · 업무분배(R&R)", sub:"행사 2026. 8. 5.(수) 10:00–16:00 · 한국기계연구원 S1동 회의실   |   작성 2026-06-26 · 분야별 책임제", note:"※ 이니셜 범례: DW=강도원, MK=민경욱, KJ=김재현, PJ=박진영. 기존 '준비업무'·'간트차트' 탭의 담당 표기(특히 DK)는 본 R&R 기준으로 재정렬 필요. 분야별 마감은 준비업무 탭 일정 기준(변경 가능).",
+const TF = { title:"KIMM–DLR 국제공동워크숍 준비 TF · 업무분배(R&R)", sub:"행사 2026. 8. 5.(수) 10:00–16:00 · 한국기계연구원 S1동 회의실   |   작성 2026-06-26 · 분야별 책임제", note:"※ 이니셜 범례: DW=강도원, MK=민경욱, KJ=김재현, PJ=박진영. 준비업무·간트차트 탭 담당은 본 R&R 기준으로 재정렬 완료. 분야별 마감은 준비업무 탭 일정 기준(변경 가능).",
   sections:[
   { title:"TF 구성 (실무자 4인)", headers:["이니셜", "성명", "역할", "담당 분야", "백업"], rows:[
       ["DW", "강도원", "간사·운영총괄", "행사 기획·문서 / 인쇄물 / 비용 처리 / 최종 점검", "전원"],
