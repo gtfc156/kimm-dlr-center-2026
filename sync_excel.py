@@ -531,7 +531,7 @@ WS_FILE = "워크숍.xlsx"
 WS_LIST, WS_SUP, WS_TL = "준비업무", "물품준비", "당일타임라인"
 WS_TF = "TF·R&R"
 TL_CATS = ["티타임", "오프닝", "발표", "중식", "랩투어", "마무리"]
-OWNER_HEX = {"DW": "2563EB", "MK": "15A06A", "DK": "B3741A", "SH": "7A4FD0"}
+OWNER_HEX = {"DW": "2563EB", "MK": "15A06A", "DK": "B3741A", "SH": "7A4FD0", "KJ": "7A4FD0", "PJ": "B3741A"}
 WS_G_START = datetime.date(2026, 6, 15)
 WS_G_END = datetime.date(2026, 8, 16)
 

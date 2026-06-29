@@ -16,6 +16,7 @@
     --good: #15a06a; --good-soft: #e6f6ee; --warn: #d9822b; --warn-soft: #fdf1e3; --danger: #d94b4b;
     --dw: #2563eb; --dw-soft: #e7effe; --mk: #15a06a; --mk-soft: #e3f6ed;
     --dk: #b3741a; --dk-soft: #fbf0dc; --sh: #7a4fd0; --sh-soft: #f0e9fc;
+    --kj: #7a4fd0; --kj-soft: #f0e9fc; --pj: #b3741a; --pj-soft: #fbf0dc;
     --ca: #2563eb; --cb: #7a4fd0; --cc: #15a06a; --cd: #d9822b;
     --t-chong: #2563eb; --t-chong-soft: #e7effe; --t-op: #0d9488; --t-op-soft: #d9f3ef;
     --t-dlr: #7a4fd0; --t-dlr-soft: #f0e9fc; --t-ketep: #b3741a; --t-ketep-soft: #fbf0dc;
@@ -98,6 +99,7 @@
   .owner, .tag { font-size: 11.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; letter-spacing: .02em; white-space: nowrap; }
   .owner.DW { background: var(--dw-soft); color: var(--dw); } .owner.MK { background: var(--mk-soft); color: var(--mk); }
   .owner.DK { background: var(--dk-soft); color: var(--dk); } .owner.SH { background: var(--sh-soft); color: var(--sh); }
+  .owner.KJ { background: var(--kj-soft); color: var(--kj); } .owner.PJ { background: var(--pj-soft); color: var(--pj); }
   .tag.t-chong { background: var(--t-chong-soft); color: var(--t-chong); } .tag.t-op { background: var(--t-op-soft); color: var(--t-op); }
   .tag.t-dlr { background: var(--t-dlr-soft); color: var(--t-dlr); } .tag.t-ketep { background: var(--t-ketep-soft); color: var(--t-ketep); }
   .src { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
@@ -190,6 +192,7 @@
   .rate { font-weight: 800; color: var(--accent); background: var(--accent-soft); padding: 2px 9px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
   .g-bar.DW { background: linear-gradient(90deg, #6c97f4, var(--dw)); } .g-bar.MK { background: linear-gradient(90deg, #3cc088, var(--mk)); }
   .g-bar.DK { background: linear-gradient(90deg, #d6a043, var(--dk)); } .g-bar.SH { background: linear-gradient(90deg, #9f78e0, var(--sh)); }
+  .g-bar.KJ { background: linear-gradient(90deg, #9f78e0, var(--kj)); } .g-bar.PJ { background: linear-gradient(90deg, #d6a043, var(--pj)); }
   .g-bar.a { background: linear-gradient(90deg, #6c97f4, var(--ca)); } .g-bar.b { background: linear-gradient(90deg, #9f78e0, var(--cb)); }
   .g-bar.c { background: linear-gradient(90deg, #3cc088, var(--cc)); } .g-bar.d { background: linear-gradient(90deg, #e8a85a, var(--cd)); }
   .g-row.done .g-bar { background: var(--good); background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0 4px, transparent 4px 8px); }
@@ -268,7 +271,7 @@
   <!-- ===== 워크숍 ===== -->
   <section class="panel" id="checklist">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
-      <span class="li"><span class="owner DW">DW</span> 도원</span><span class="li"><span class="owner MK">MK</span> 민국</span><span class="li"><span class="owner DK">DK</span> 동근</span></div>
+      <span class="li"><span class="owner DW">DW</span> 강도원</span><span class="li"><span class="owner MK">MK</span> 민경욱</span><span class="li"><span class="owner KJ">KJ</span> 김재현</span><span class="li"><span class="owner PJ">PJ</span> 박진영</span></div>
     <div class="progress-card"><span class="ptext">완료 <b id="cl-done">0</b> / <span id="cl-total">0</span></span>
       <div class="bar"><span id="cl-bar"></span></div><button class="reset-btn" data-reset="c">초기화</button></div>
     <div id="checklist-body"></div>
@@ -288,12 +291,12 @@
   </section>
   <section class="panel" id="ws-gantt">
     <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">담당</span>
-      <span class="li"><span class="owner DW">DW</span> 도원</span><span class="li"><span class="owner MK">MK</span> 민국</span><span class="li"><span class="owner DK">DK</span> 동근</span>
+      <span class="li"><span class="owner DW">DW</span> 강도원</span><span class="li"><span class="owner MK">MK</span> 민경욱</span><span class="li"><span class="owner KJ">KJ</span> 김재현</span><span class="li"><span class="owner PJ">PJ</span> 박진영</span>
       <span class="li" style="color:var(--muted)">막대 오른쪽 끝 = 마감(안) · 빨강 = 8/5</span></div>
     <div class="gantt-scroll"><div class="gantt-inner" id="ws-gantt-body"></div></div>
   </section>
   <section class="panel" id="tf">
-    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">준비 TF · 업무분배(R&R)</span><span style="color:var(--muted)">분야별 책임제 · 이니셜 DW 도원 · MK 경욱 · KJ 재현 · PJ 진영</span></div>
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">준비 TF · 업무분배(R&R)</span><span style="color:var(--muted)">분야별 책임제 · DW 강도원 · MK 민경욱 · KJ 김재현 · PJ 박진영</span></div>
     <div id="tf-body"></div>
   </section>
 </main>
@@ -308,7 +311,7 @@ const SECTIONS = {
     chips:["🗓️ 1단계 <b>2025–2027</b> 중 2차년도","🤝 주관 <b>KIMM</b> · 해외 <b>DLR</b> · 전담 <b>KETEP</b>","🧩 세부과제 <b>5개</b> 통합관리"] },
   ws: { title:"2026 KIMM–DLR 국제공동워크숍 준비 체크리스트",
     sub:"기계연(KIMM) 개최 · 작년(독일 개최) 체크리스트를 개최측(호스트) 기준으로 보완",
-    chips:["📅 <b>2026.8.5.(수)</b> 10:00–15:00","📍 한국기계연구원 <b>S1동 회의실</b>","🤝 주최 <b>KIMM</b> · 참석 <b>DLR</b>"] },
+    chips:["📅 <b>2026.8.5.(수)</b> 10:00–16:00","📍 한국기계연구원 <b>S1동 회의실</b>","🤝 주최 <b>KIMM</b> · 참석 <b>DLR</b>"] },
 };
 
 /* GEN:CHECKLIST:START */
@@ -318,45 +321,45 @@ const CHECKLIST = [
     { task:"참석자 명단 확정 (KIMM/DLR 양측, 직책·영문성명)", owner:"DW", start:"7/3", due:"7/17", note:"명찰·중식·기념품 수량 기준" },
     { task:"행사 내용·예산 확정 후 내부결재 기안 (회의실, 다과·중식, 인쇄물, 기념품, 회의비 등)", owner:"DW", start:"7/1", due:"7/10", note:"" } ]},
   { num:2, title:"회의실·세팅", sub:"S1동 회의실", items:[
-    { task:"S1동 회의실 예약 및 좌석 배치(안) 확정", owner:"DW", start:"6/22", due:"7/3", note:"양측 인원 기준" },
-    { task:"빔프로젝터·스크린·노트북·음향·포인터 사전 점검 / 발표자료 호환 테스트", owner:"DW", start:"8/3", due:"8/4", note:"전일 리허설" },
-    { task:"좌석 명패(영문 포함)·좌석 배치도 제작", owner:"DW", start:"7/22", due:"7/29", note:"" },
-    { task:"다과·음료 세팅", owner:"DW", start:"7/29", due:"8/4", note:"08/5 오전 비치" } ]},
+    { task:"S1동 회의실 예약 및 좌석 배치(안) 확정", owner:"PJ", start:"6/22", due:"7/3", note:"양측 인원 기준" },
+    { task:"빔프로젝터·스크린·노트북·음향·포인터 사전 점검 / 발표자료 호환 테스트", owner:"PJ", start:"8/3", due:"8/4", note:"전일 리허설" },
+    { task:"좌석 명패(영문 포함)·좌석 배치도 제작", owner:"PJ", start:"7/22", due:"7/29", note:"" },
+    { task:"다과·음료 세팅", owner:"PJ", start:"7/29", due:"8/4", note:"08/5 오전 비치" } ]},
   { num:3, title:"발표자료", sub:"", items:[
-    { task:"총괄발표 자료 취합", owner:"DW", start:"7/17", due:"7/29", note:"" },
-    { task:"기계연 1~4세부 발표자료 취합", owner:"DW", start:"7/10", due:"7/29", note:"영문 권장" },
-    { task:"DLR 1~3세부 발표자료 수신(영문)", owner:"DW", start:"7/8", due:"7/29", note:"DLR측 요청" },
-    { task:"발표자료 통합본 구성·사전 점검(순서·영문·표기 통일)", owner:"DW", start:"7/30", due:"8/4", note:"" } ]},
+    { task:"총괄발표 자료 취합", owner:"KJ", start:"7/17", due:"7/29", note:"" },
+    { task:"기계연 1~4세부 발표자료 취합", owner:"KJ", start:"7/10", due:"7/29", note:"영문 권장" },
+    { task:"DLR 1~3세부 발표자료 수신(영문)", owner:"KJ", start:"7/8", due:"7/29", note:"DLR측 요청" },
+    { task:"발표자료 통합본 구성·사전 점검(순서·영문·표기 통일)", owner:"KJ", start:"7/30", due:"8/4", note:"" } ]},
   { num:4, title:"인쇄물", sub:"플랜카드·입간판", items:[
-    { task:"플랜카드·탁상용 입간판 문구 작성", owner:"DW, DK", start:"7/3", due:"7/10", note:"" },
+    { task:"플랜카드·탁상용 입간판 문구 작성", owner:"DW", start:"7/3", due:"7/10", note:"" },
     { task:"1차 시안 내부 검토 → 디자인 의뢰(마이스피플)", owner:"DW", start:"7/11", due:"7/15", note:"작년 동일 업체" },
-    { task:"업체 시안 검토·수정 → 디자인 최종 확정", owner:"DW, DK", start:"7/15", due:"7/22", note:"" },
+    { task:"업체 시안 검토·수정 → 디자인 최종 확정", owner:"DW", start:"7/15", due:"7/22", note:"" },
     { task:"플랜카드·입간판 최종 인쇄 요청 및 수령", owner:"DW", start:"7/22", due:"7/29", note:"" } ]},
   { num:5, title:"명찰·국기", sub:"", items:[
-    { task:"명찰·명찰 줄 시안 제작 → 마이스피플 디자인 의뢰", owner:"DW", start:"7/9", due:"7/15", note:"명단 확정 후" },
-    { task:"명찰·명찰 줄 디자인 최종·수량 확정 → 인쇄 요청·수령", owner:"DW", start:"7/22", due:"7/29", note:"여분 포함" },
-    { task:"한국·독일 국기 및 받침대(탁상용) 준비", owner:"DW", start:"7/13", due:"7/17", note:"" } ]},
+    { task:"명찰·명찰 줄 시안 제작 → 마이스피플 디자인 의뢰", owner:"PJ", start:"7/9", due:"7/15", note:"명단 확정 후" },
+    { task:"명찰·명찰 줄 디자인 최종·수량 확정 → 인쇄 요청·수령", owner:"PJ", start:"7/22", due:"7/29", note:"여분 포함" },
+    { task:"한국·독일 국기 및 받침대(탁상용) 준비", owner:"PJ", start:"7/13", due:"7/17", note:"" } ]},
   { num:6, title:"기념품·선물", sub:"", items:[
-    { task:"DLR 참석자용 기념품 확보", owner:"DW", start:"7/10", due:"7/24", note:"명단 확정 먼저" } ]},
+    { task:"DLR 참석자용 기념품 확보", owner:"MK", start:"7/10", due:"7/24", note:"명단 확정 먼저" } ]},
   { num:7, title:"중식", sub:"12:00~13:30", items:[
-    { task:"식당 예약 또는 케이터링 확정 (이동시간 포함)", owner:"DW", start:"7/13", due:"7/22", note:"원내/인근" },
-    { task:"메뉴 확정 — DLR측 식이 제한(채식·할랄·알레르기) 사전 확인", owner:"DW", start:"7/8", due:"7/22", note:"독일 손님 필수 확인", flag:true },
-    { task:"좌석·이동 동선 안내", owner:"DW", start:"8/1", due:"8/4", note:"" } ]},
+    { task:"식당 예약 또는 케이터링 확정 (이동시간 포함)", owner:"MK", start:"7/13", due:"7/22", note:"원내/인근" },
+    { task:"메뉴 확정 — DLR측 식이 제한(채식·할랄·알레르기) 사전 확인", owner:"MK", start:"7/8", due:"7/22", note:"독일 손님 필수 확인", flag:true },
+    { task:"좌석·이동 동선 안내", owner:"MK", start:"8/1", due:"8/4", note:"" } ]},
   { num:8, title:"랩투어", sub:"13:30~14:50, 4개", items:[
-    { task:"랩투어 실험실 4곳 확정 (가스터빈 연소기 / 고온 수전해·연료전지 / 추가 2곳)", owner:"MK, DW", start:"6/19", due:"7/10", note:"" },
-    { task:"각 실험실 담당자 협의·일정 공유 및 영문 설명자료 준비", owner:"DW", start:"7/11", due:"7/24", note:"" },
-    { task:"출입 동선·이동시간 점검", owner:"DW", start:"7/28", due:"7/31", note:"" } ]},
+    { task:"랩투어 실험실 4곳 확정 (가스터빈 연소기 / 고온 수전해·연료전지 / 추가 2곳)", owner:"KJ", start:"6/19", due:"7/10", note:"" },
+    { task:"각 실험실 담당자 협의·일정 공유 및 영문 설명자료 준비", owner:"KJ", start:"7/11", due:"7/24", note:"" },
+    { task:"출입 동선·이동시간 점검", owner:"KJ", start:"7/28", due:"7/31", note:"" } ]},
   { num:9, title:"의전·영접", sub:"DLR 손님", items:[
-    { task:"대전 숙소 안내 (필요 시)", owner:"DW", start:"7/18", due:"7/24", note:"DLR 도착 일정 확인" },
-    { task:"방문자 출입 등록·주차 안내 (연구원 보안 절차)", owner:"DW", start:"7/25", due:"7/31", note:"" },
-    { task:"원내 안내 표지판·동선 표시", owner:"DW", start:"7/31", due:"8/4", note:"" } ]},
+    { task:"대전 숙소 안내 (필요 시)", owner:"MK", start:"7/18", due:"7/24", note:"DLR 도착 일정 확인" },
+    { task:"방문자 출입 등록·주차 안내 (연구원 보안 절차)", owner:"MK", start:"7/25", due:"7/31", note:"" },
+    { task:"원내 안내 표지판·동선 표시", owner:"MK", start:"7/31", due:"8/4", note:"" } ]},
   { num:10, title:"사진·기록", sub:"", items:[
-    { task:"기념 촬영 담당 지정 및 구도·단체사진 위치 사전 확인", owner:"DW", start:"8/1", due:"8/4", note:"11:50~12:00 촬영" },
-    { task:"행사 진행 사진·기록 정리", owner:"DW", start:"8/5", due:"8/5", note:"행사 당일" } ]},
+    { task:"기념 촬영 담당 지정 및 구도·단체사진 위치 사전 확인", owner:"MK", start:"8/1", due:"8/4", note:"11:50~12:00 촬영" },
+    { task:"행사 진행 사진·기록 정리", owner:"MK", start:"8/5", due:"8/5", note:"행사 당일" } ]},
   { num:11, title:"비용 처리", sub:"", items:[
     { task:"인쇄비·기념품·다과·중식·회의비 등 정산 및 결재", owner:"DW", start:"8/6", due:"8/14", note:"총괄과제 인쇄비 등" } ]},
   { num:12, title:"최종 점검", sub:"", items:[
-    { task:"전일 전체 세팅·리허설 점검 (회의실·자료·물품·동선 일괄 확인)", owner:"DW, MK, DK", start:"8/4", due:"8/4", note:"체크리스트 일괄 검토" } ]}
+    { task:"전일 전체 세팅·리허설 점검 (회의실·자료·물품·동선 일괄 확인)", owner:"DW", start:"8/4", due:"8/4", note:"체크리스트 일괄 검토" } ]}
 ];
 /* GEN:CHECKLIST:END */
 
