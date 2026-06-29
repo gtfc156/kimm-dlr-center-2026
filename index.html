@@ -232,6 +232,7 @@
     <button class="tab" data-tab="supplies">📦 물품 준비 <span class="count" id="cnt-supplies"></span></button>
     <button class="tab" data-tab="timeline">🗓️ 당일 타임라인 <span class="count" id="cnt-timeline"></span></button>
     <button class="tab" data-tab="ws-gantt">📊 간트 차트 <span class="count" id="cnt-ws-gantt"></span></button>
+    <button class="tab" data-tab="tf">👥 준비 TF <span class="count" id="cnt-tf"></span></button>
   </div>
 </div>
 
@@ -290,6 +291,10 @@
       <span class="li"><span class="owner DW">DW</span> 도원</span><span class="li"><span class="owner MK">MK</span> 민국</span><span class="li"><span class="owner DK">DK</span> 동근</span>
       <span class="li" style="color:var(--muted)">막대 오른쪽 끝 = 마감(안) · 빨강 = 8/5</span></div>
     <div class="gantt-scroll"><div class="gantt-inner" id="ws-gantt-body"></div></div>
+  </section>
+  <section class="panel" id="tf">
+    <div class="legend"><span style="font-weight:700;color:var(--ink-soft)">준비 TF · 업무분배(R&R)</span><span style="color:var(--muted)">분야별 책임제 · 이니셜 DW 도원 · MK 경욱 · KJ 재현 · PJ 진영</span></div>
+    <div id="tf-body"></div>
   </section>
 </main>
 
@@ -398,6 +403,38 @@ const TIMELINE = [
   { time:"16:00–", cat:"마무리", content:"마무리 및 폐회", note:"기념품 전달" }
 ];
 /* GEN:TIMELINE:END */
+
+/* GEN:TF:START */
+const TF = { title:"KIMM–DLR 국제공동워크숍 준비 TF · 업무분배(R&R)", sub:"행사 2026. 8. 5.(수) 10:00–16:00 · 한국기계연구원 S1동 회의실   |   작성 2026-06-26 · 분야별 책임제", note:"※ 이니셜 범례: DW=강도원, MK=민경욱, KJ=김재현, PJ=박진영. 기존 '준비업무'·'간트차트' 탭의 담당 표기(특히 DK)는 본 R&R 기준으로 재정렬 필요. 분야별 마감은 준비업무 탭 일정 기준(변경 가능).",
+  sections:[
+  { title:"TF 구성 (실무자 4인)", headers:["이니셜", "성명", "역할", "담당 분야", "백업"], rows:[
+      ["DW", "강도원", "간사·운영총괄", "행사 기획·문서 / 인쇄물 / 비용 처리 / 최종 점검", "전원"],
+      ["MK", "민경욱", "의전·손님(DLR)", "의전·영접 / 중식 / 기념품 / 사진·기록", "DW"],
+      ["KJ", "김재현", "발표·랩투어", "발표자료 / 랩투어", "DW"],
+      ["PJ", "박진영", "시설·물품", "회의실·세팅 / 명찰·국기 / 물품준비", "DW"] ]},
+  { title:"분야별 R&R (준비 단계)", headers:["분야", "담당", "주요 업무", "시기(마감)", "협업"], rows:[
+      ["행사 기획·문서", "강도원(DW)", "세부일정·발표자·참석자 명단·예산 확정, 내부결재 기안", "~7/17", "전원"],
+      ["인쇄물", "강도원(DW)", "플랜카드·탁상 입간판 문구→디자인 의뢰(마이스피플)→인쇄·수령", "~7/29", "박진영"],
+      ["비용 처리", "강도원(DW)", "인쇄·기념품·다과·중식·회의비 정산 및 결재", "8/6~8/14", "—"],
+      ["최종 점검", "강도원(DW)", "전일(8/4) 전체 세팅·리허설 일괄 점검(체크리스트)", "8/4", "전원"],
+      ["발표자료", "김재현(KJ)", "총괄·기계연 1~3세부·DLR 발표본 취합(영문)·통합본·호환테스트", "~8/4", "박진영(AV)"],
+      ["랩투어", "김재현(KJ)", "실험실 4곳 담당자 협의·영문 설명·안전·통역·이동동선", "~7/31", "강도원"],
+      ["의전·영접", "민경욱(MK)", "DLR 숙소 안내·방문자 출입/주차 등록·원내 안내표지", "~8/4", "—"],
+      ["중식", "민경욱(MK)", "식당 예약/케이터링·식이제한(채식·할랄·알레르기)·동선", "~8/4", "—"],
+      ["기념품·선물", "민경욱(MK)", "DLR 참석자용 기념품 확보(명단 확정 후)", "~7/24", "강도원"],
+      ["사진·기록", "민경욱(MK)", "촬영 담당 지정·단체사진 위치(11:50~12:00)·기록 정리", "8/1~8/5", "—"],
+      ["회의실·세팅", "박진영(PJ)", "S1동 예약·좌석배치·빔/음향/포인터·다과 세팅", "~8/4", "김재현(AV)"],
+      ["명찰·국기", "박진영(PJ)", "명찰·명찰줄 디자인/인쇄·한국/독일 국기·받침대", "~7/29", "강도원(명단)"] ]},
+  { title:"당일(8/5) 운영 분장", headers:["시간/구분", "담당", "역할"], rows:[
+      ["전체 진행·사회", "강도원(DW)", "식순 진행·인사말/발표 사회·시간 관리"],
+      ["발표 운영", "김재현(KJ)", "발표 순서·자료 송출·발표자 안내(총괄→기계연→DLR)"],
+      ["AV·회의실", "박진영(PJ)", "빔/음향/포인터 운용·좌석/명패/다과·돌발 대응"],
+      ["DLR 의전·통역", "민경욱(MK)", "손님 영접·동선·통역 연결·중식 안내"],
+      ["랩투어 인솔", "김재현(KJ)", "13:30~14:50 4개 실험실 인솔·안전·시간 관리"],
+      ["촬영·기록", "민경욱(MK)", "단체촬영(11:50)·행사 기록"],
+      ["기념품·마무리", "강도원·민경욱", "폐회(16:00)·기념품 전달"] ]}
+] };
+/* GEN:TF:END */
 
 const TAGS = { chong:{l:"총괄",c:"t-chong"}, op:{l:"운영위",c:"t-op"}, dlr:{l:"DLR",c:"t-dlr"}, ketep:{l:"전담",c:"t-ketep"} };
 /* GEN:CATS:START */
@@ -613,6 +650,23 @@ function renderTimeline() {
       <div class="tl-line"><span class="tl-dot" style="border-color:${t.warn?"#d94b4b":"var(--accent)"}"></span>
         <div class="tl-card ${t.warn?"warn":""}"><span class="tl-cat c-${t.cat}">${esc(t.cat)}</span>
           <div class="tl-content">${esc(t.content)}</div>${t.note?`<div class="tl-note">${t.warn?"⚠ ":""}${esc(t.note)}</div>`:""}</div></div></div>`).join("");
+}
+
+/* ===================== RENDER: workshop TF / R&R ===================== */
+function renderTF() {
+  const el = document.getElementById("tf-body");
+  if (!el) return;
+  if (!TF || !TF.sections || !TF.sections.length) { el.innerHTML = ""; return; }
+  const sec = (s) => `
+    <div style="font-weight:800;color:var(--navy);margin:18px 2px 8px;font-size:15px">${esc(s.title)}</div>
+    <div class="table-card"><div class="tbl-scroll"><table>
+      <thead><tr>${s.headers.map((h)=>`<th>${esc(h)}</th>`).join("")}</tr></thead>
+      <tbody>${s.rows.map((r)=>`<tr>${r.map((c,i)=>`<td class="${i===0?"item-name":"loc"}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table></div></div>`;
+  el.innerHTML =
+    (TF.sub?`<div class="note-box">${esc(TF.sub)}</div>`:"") +
+    TF.sections.map(sec).join("") +
+    (TF.note?`<div class="note-box" style="margin-top:14px">${esc(TF.note)}</div>`:"");
 }
 
 /* ===================== RENDER: PM list ===================== */
@@ -849,6 +903,7 @@ function updateProgress() {
   set("sp-done",sp); set("sp-total",spT); setW("sp-bar", spT?(sp/spT*100)+"%":"0");
   set("pm-li-done",pm); set("pm-li-total",pmT); setW("pm-li-bar", pmT?(pm/pmT*100)+"%":"0");
   set("cnt-checklist",`${cl}/${clT}`); set("cnt-supplies",`${sp}/${spT}`); set("cnt-timeline",TIMELINE.length); set("cnt-ws-gantt",`${cl}/${clT}`);
+  set("cnt-tf", (typeof TF!=="undefined"&&TF.sections)?TF.sections.reduce((a,s)=>a+s.rows.length,0):0);
   set("cnt-pm-list",`${pm}/${pmT}`); set("cnt-pm-gantt",`${pm}/${pmT}`);
   SUBPROJECTS.forEach((p)=>{ let d=0,tot=0;
     p.cats.forEach((c,ci)=>{ let cd=0; c.tasks.forEach((_,ii)=>{ tot++; if(state[`${p.prefix}-${ci}-${ii}`]){d++;cd++;} }); const m=document.querySelector(`[data-mini="${p.prefix}-${ci}"]`); if(m) m.textContent=`${cd}/${c.tasks.length}`; });
@@ -907,7 +962,7 @@ function setDday() {
 }
 
 /* ===================== INIT ===================== */
-renderChecklist(); renderSupplies(); renderTimeline(); renderWsGantt(); renderPmList(); renderPmGantt();
+renderChecklist(); renderSupplies(); renderTimeline(); renderTF(); renderWsGantt(); renderPmList(); renderPmGantt();
 renderQuant(QUANT_CHONG, "pm-quant-body", "cnt-pm-quant");
 renderBudget(BUDGET, "pm-budget-body", "cnt-pm-budget");
 buildSubprojects();

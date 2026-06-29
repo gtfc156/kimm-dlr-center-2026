@@ -529,6 +529,7 @@ def write_xlsx(path, cats, with_juk, perf, quant, miles):
 # ============================ WORKSHOP (워크숍 8/5) ============================
 WS_FILE = "워크숍.xlsx"
 WS_LIST, WS_SUP, WS_TL = "준비업무", "물품준비", "당일타임라인"
+WS_TF = "TF·R&R"
 TL_CATS = ["티타임", "오프닝", "발표", "중식", "랩투어", "마무리"]
 OWNER_HEX = {"DW": "2563EB", "MK": "15A06A", "DK": "B3741A", "SH": "7A4FD0"}
 WS_G_START = datetime.date(2026, 6, 15)
@@ -647,6 +648,51 @@ def build_timeline_js(rows):
             p.append("warn:true")
         out.append("  { " + ", ".join(p) + " }")
     return "const TIMELINE = [\n" + ",\n".join(out) + "\n];"
+
+
+# ── TF·R&R (구조형 시트: 제목/소제목 + □섹션별 표 + ※범례) ──────────────────────
+def read_tf(ws):
+    title = sub = note = ""
+    sections, cur, expect_header, started = [], None, False, False
+    for row in ws.iter_rows(values_only=True):
+        cs = [("" if c is None else str(c).strip()) for c in (list(row) + [None] * 5)[:5]]
+        if not any(cs):
+            continue
+        first = cs[0]
+        if first.startswith("□"):
+            cur = {"title": first.lstrip("□ ").strip(), "headers": [], "rows": []}
+            sections.append(cur)
+            expect_header, started = True, True
+            continue
+        if first.startswith("※"):
+            note = first
+            continue
+        if not started:
+            if not title:
+                title = first
+            elif not sub:
+                sub = first
+            continue
+        if cur is None:
+            continue
+        last = max(i for i, c in enumerate(cs) if c)
+        if expect_header:
+            cur["headers"] = cs[:last + 1]
+            expect_header = False
+        else:
+            n = len(cur["headers"]) or (last + 1)
+            cur["rows"].append((cs + [""] * n)[:n])
+    return {"title": title, "sub": sub, "sections": sections, "note": note}
+
+
+def build_tf_js(tf):
+    secs = []
+    for s in tf["sections"]:
+        heads = "[" + ", ".join(js(h) for h in s["headers"]) + "]"
+        rws = ",\n".join("      [" + ", ".join(js(c) for c in r) + "]" for r in s["rows"])
+        secs.append("  { title:%s, headers:%s, rows:[\n%s ]}" % (js(s["title"]), heads, rws))
+    return ("const TF = { title:%s, sub:%s, note:%s,\n  sections:[\n%s\n] };"
+            % (js(tf["title"]), js(tf["sub"]), js(tf["note"]), ",\n".join(secs)))
 
 
 def _ws_head(ws, headers, widths):
@@ -851,8 +897,11 @@ def do_sync():
         html = inject(html, "CHECKLIST", build_checklist_js(checklist))
         html = inject(html, "SUPPLIES", build_supplies_js(supplies))
         html = inject(html, "TIMELINE", build_timeline_js(timeline))
+        tf = read_tf(wb[WS_TF]) if WS_TF in wb.sheetnames else {"title": "", "sub": "", "sections": [], "note": ""}
+        html = inject(html, "TF", build_tf_js(tf))
         wn = sum(len(c["items"]) for c in checklist)
-        print(f"  읽음: data/{WS_FILE}  준비업무 {wn}건 · 물품 {sum(len(g['rows']) for g in supplies)}건 · 타임라인 {len(timeline)}건")
+        tn = sum(len(s["rows"]) for s in tf["sections"])
+        print(f"  읽음: data/{WS_FILE}  준비업무 {wn}건 · 물품 {sum(len(g['rows']) for g in supplies)}건 · 타임라인 {len(timeline)}건 · TF {tn}건")
     open(INDEX, "w", encoding="utf-8").write(html)
     print(f"index.html 갱신 완료 (과제 업무 {total}건 + 성능·정량 + 워크숍). git push(gtfc156) 하면 사이트에 반영됩니다.")
 
