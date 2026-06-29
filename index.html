@@ -176,6 +176,7 @@
   .g-event .lbl { position: absolute; top: 2px; left: 5px; font-size: 10.5px; font-weight: 800; white-space: nowrap; }
   .g-mile-pin { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); z-index: 5; font-size: 11px; font-weight: 800; line-height: 1; color: #d98e1f; white-space: nowrap; background: var(--surface); border: 1px solid #f0c89a; border-radius: 999px; padding: 2px 5px; box-shadow: var(--shadow); cursor: default; }
   .g-mile-pin.top { top: 7px; transform: translateX(-50%); font-size: 10px; color: var(--warn); }
+  .g-pt-star { position: absolute; top: 50%; transform: translate(-50%, -50%); z-index: 3; font-size: 15px; line-height: 1; cursor: default; }
   .g-mile-cap { padding: 7px 13px; font-size: 11.5px; color: var(--ink-soft); border-top: 1px dashed var(--line); background: #fffdf8; line-height: 1.95; }
   .g-mile-cap b { color: #d98e1f; }
   .g-cat-row { background: #f9fbfe; border-bottom: 1px solid var(--line); }
@@ -491,7 +492,7 @@ const CATS = [
       { name:"국제워크숍 개최", start:"2026-07-01", end:"2026-08-05", note:"8월 5일" },
       { name:"DLR 해외 인력 파견", start:"2026-02-15", end:"2026-08-31", astart:"2026-02-15", aend:"2026-05-31", note:"이원준(2월 중순~5월 중순), 박진영(5월), 황정재(7~8월)" } ]},
   { key:"3", cls:"c", title:"성과관리", tasks:[
-      { name:"수요기업 사업화설명회 개최", start:"2026-08-01", end:"2026-08-28", note:"가스터빈 심포지움 2026 (8.26~28)" },
+      { name:"수요기업 사업화설명회 개최", start:"2026-08-26", end:"2026-08-26", note:"가스터빈 심포지움 2026 (8.26~28)" },
       { name:"성과지표(논문·특허·기술교류) 관리 및 취합", start:"2026-01-01", end:"2026-12-31", astart:"2026-01-01", aend:"2026-06-29", note:"8월 말, 11월 점검 실시" } ]},
   { key:"4", cls:"d", title:"평가·보고", tasks:[
       { name:"2차년도 연차실적 평가 및 연차보고서 작성·제출", start:"2026-11-01", end:"2026-11-30", note:"11월 초 작성, 11월 말 제출" } ]} ];
@@ -788,12 +789,17 @@ function renderPmGantt() {
   CATS.forEach((cat, ci) => {
     rows+=`<div class="g-cat-row"><div class="g-cat-label"><span class="dot" style="background:var(--c${cat.cls})"></span>${cat.key}. ${esc(cat.title)}</div><div class="g-cat-track">${milePins(MILESTONES_CHONG, cat.key, cat.title, pct)}</div></div>`;
     cat.tasks.forEach((t, ii) => {
-      const id=`t-${ci}-${ii}`, s=dIso(t.start), e=dIso(t.end);
-      const L=pct(s), W=Math.max(pct(e)-L,1.0), done=!!state[id];
-      let bars=`<div class="g-bar plan ${cat.cls}" style="left:${L}%;width:${W}%" title="계획 ${esc(t.start)}~${esc(t.end)}"></div>`;
-      if(t.astart&&t.aend){ const La=pct(dIso(t.astart)), Wa=Math.max(pct(dIso(t.aend))-La,1.0);
-        bars+=`<div class="g-bar actual ${cat.cls}" style="left:${La}%;width:${Wa}%" title="실적 ${esc(t.astart)}~${esc(t.aend)}"></div>`; }
-      rows+=`<div class="g-row ${done?"done":""}" data-id="${id}" title="${esc(t.name)}  ·  계획 ${fmtIso(t.start,t.end)}${t.astart?`  ·  실적 ${fmtIso(t.astart,t.aend)}`:""}${t.juk&&t.juk.length?"  ·  "+t.juk.map((k)=>TAGS[k].l).join("·"):""}">
+      const id=`t-${ci}-${ii}`, s=dIso(t.start), e=dIso(t.end), done=!!state[id], point=(t.start===t.end);
+      let bars;
+      if(point){
+        bars=`<div class="g-pt-star" style="left:${pct(s)}%;color:var(--c${cat.cls})" title="${esc(t.name)} · ${esc(t.start)}">★</div>`;
+      } else {
+        const L=pct(s), W=Math.max(pct(e)-L,1.0);
+        bars=`<div class="g-bar plan ${cat.cls}" style="left:${L}%;width:${W}%" title="계획 ${esc(t.start)}~${esc(t.end)}"></div>`;
+        if(t.astart&&t.aend){ const La=pct(dIso(t.astart)), Wa=Math.max(pct(dIso(t.aend))-La,1.0);
+          bars+=`<div class="g-bar actual ${cat.cls}" style="left:${La}%;width:${Wa}%" title="실적 ${esc(t.astart)}~${esc(t.aend)}"></div>`; }
+      }
+      rows+=`<div class="g-row ${done?"done":""}" data-id="${id}" title="${esc(t.name)}  ·  ${point?`${esc(t.start)} (단일 일정)`:`계획 ${fmtIso(t.start,t.end)}${t.astart?`  ·  실적 ${fmtIso(t.astart,t.aend)}`:""}`}${t.juk&&t.juk.length?"  ·  "+t.juk.map((k)=>TAGS[k].l).join("·"):""}">
         <div class="g-label"><span class="gl-id">${cat.key}${ii+1}</span><span class="gl-task">${esc(t.name)}</span></div>
         <div class="g-track">${bars}</div></div>`;
     });
