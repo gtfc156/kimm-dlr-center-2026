@@ -701,7 +701,7 @@ def build_tf_js(tf):
 def read_attendees(ws):
     groups, by = [], {}
     for row in ws.iter_rows(min_row=2, values_only=True):
-        org, name, rank, dept, role = [("" if c is None else str(c).strip()) for c in (list(row) + [None] * 5)[:5]]
+        org, name, rank, dept, role, github = [("" if c is None else str(c).strip()) for c in (list(row) + [None] * 6)[:6]]
         if not name:
             continue
         key = org or "기타"
@@ -709,7 +709,7 @@ def read_attendees(ws):
             g = {"org": ATT_ORG.get(key, key), "rows": []}
             by[key] = g
             groups.append(g)
-        by[key]["rows"].append([name, rank, dept, role])
+        by[key]["rows"].append([name, rank, dept, role, github])
     return groups
 
 
